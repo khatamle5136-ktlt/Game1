@@ -1,0 +1,3737 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  >
+
+  <title>🚑 Cuộc Đua Cứu Hộ</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #020617;
+      color: #fff;
+    }
+
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      touch-action: manipulation;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* =========================
+       START
+    ========================= */
+
+    #startScreen {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px 14px;
+      background:
+        radial-gradient(circle at top, #2563eb 0%, #172554 38%, #020617 100%);
+    }
+
+    .start-card {
+      width: min(440px, 100%);
+      background: rgba(15, 23, 42, .97);
+      border: 1px solid #334155;
+      border-radius: 28px;
+      padding: 26px 20px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,.45);
+    }
+
+    .logo {
+      font-size: 70px;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .title {
+      font-size: 29px;
+      font-weight: 1000;
+      margin-bottom: 7px;
+    }
+
+    .subtitle {
+      color: #cbd5e1;
+      line-height: 1.5;
+      font-size: 14px;
+      margin-bottom: 22px;
+    }
+
+    .label {
+      display: block;
+      text-align: left;
+      font-size: 14px;
+      font-weight: 900;
+      margin: 12px 0 7px;
+    }
+
+    .input {
+      width: 100%;
+      padding: 15px;
+      border-radius: 15px;
+      border: 2px solid #334155;
+      outline: none;
+      background: #020617;
+      color: white;
+      font-size: 18px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .input:focus {
+      border-color: #38bdf8;
+    }
+
+    .input.team {
+      text-transform: none;
+    }
+
+    .start-button {
+      width: 100%;
+      margin-top: 17px;
+      border: 0;
+      border-radius: 17px;
+      padding: 17px;
+      color: white;
+      font-size: 20px;
+      font-weight: 1000;
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      box-shadow: 0 7px 0 #991b1b;
+    }
+
+    .start-button:active {
+      transform: translateY(4px);
+      box-shadow: 0 3px 0 #991b1b;
+    }
+
+    .sound-start {
+      width: 100%;
+      margin-top: 16px;
+      padding: 12px;
+      border: 1px solid #475569;
+      border-radius: 14px;
+      background: #1e293b;
+      color: white;
+      font-weight: 800;
+    }
+
+    .connection {
+      margin-top: 15px;
+      color: #94a3b8;
+      font-size: 12px;
+      min-height: 18px;
+    }
+
+    .error {
+      margin-top: 12px;
+      padding: 10px;
+      border-radius: 12px;
+      background: rgba(239,68,68,.15);
+      border: 1px solid rgba(239,68,68,.4);
+      color: #fecaca;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    /* =========================
+       GAME HEADER
+    ========================= */
+
+    #gameScreen {
+      min-height: 100vh;
+      background: #020617;
+      padding-bottom: 30px;
+    }
+
+    .game-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(2,6,23,.97);
+      border-bottom: 1px solid #1e293b;
+      padding: 9px;
+    }
+
+    .header-grid {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 7px;
+      align-items: center;
+    }
+
+    .team-header {
+      min-width: 0;
+    }
+
+    .team-name {
+      font-weight: 1000;
+      font-size: 16px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .stage-text {
+      color: #94a3b8;
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .stats {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .stat {
+      background: #111827;
+      border: 1px solid #334155;
+      border-radius: 11px;
+      padding: 7px 8px;
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .sound-button {
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      border-radius: 11px;
+      border: 1px solid #475569;
+      background: #1e293b;
+      color: white;
+      font-size: 18px;
+    }
+
+    /* =========================
+       TIMER
+    ========================= */
+
+    .timer-area {
+      padding: 12px 12px 4px;
+    }
+
+    .timer {
+      text-align: center;
+      font-size: 38px;
+      line-height: 1;
+      font-weight: 1000;
+      margin-bottom: 8px;
+    }
+
+    .timer.warning {
+      color: #facc15;
+    }
+
+    .timer.danger {
+      color: #ef4444;
+      animation: pulse .6s infinite alternate;
+    }
+
+    @keyframes pulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.07); }
+    }
+
+    .timer-track {
+      height: 9px;
+      border-radius: 99px;
+      background: #1e293b;
+      overflow: hidden;
+    }
+
+    .timer-fill {
+      height: 100%;
+      width: 100%;
+      background: #22c55e;
+      transition: width .2s linear;
+    }
+
+    .timer-fill.warning {
+      background: #facc15;
+    }
+
+    .timer-fill.danger {
+      background: #ef4444;
+    }
+
+    /* =========================
+       MAP
+    ========================= */
+
+    .map-wrap {
+      padding: 10px 12px;
+    }
+
+    .map {
+      position: relative;
+      height: 245px;
+      border-radius: 22px;
+      overflow: hidden;
+      border: 2px solid #334155;
+      background:
+        linear-gradient(
+          90deg,
+          #166534 0 17%,
+          #475569 17% 83%,
+          #166534 83% 100%
+        );
+      box-shadow: inset 0 0 35px rgba(0,0,0,.4);
+    }
+
+    .road-line {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      width: 5px;
+      height: 100%;
+      transform: translateX(-50%);
+      background: repeating-linear-gradient(
+        to bottom,
+        #facc15 0 25px,
+        transparent 25px 45px
+      );
+      opacity: .8;
+    }
+
+    .road-edge-left,
+    .road-edge-right {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: #f8fafc;
+      opacity: .65;
+    }
+
+    .road-edge-left {
+      left: 17%;
+    }
+
+    .road-edge-right {
+      right: 17%;
+    }
+
+    .grass-dot {
+      position: absolute;
+      font-size: 15px;
+      opacity: .7;
+    }
+
+    .ambulance {
+      position: absolute;
+      left: 50%;
+      bottom: 20px;
+      transform: translateX(-50%);
+      font-size: 54px;
+      z-index: 10;
+      filter: drop-shadow(0 6px 4px rgba(0,0,0,.5));
+      transition: left .4s ease, transform .4s ease;
+    }
+
+    .map-event {
+      position: absolute;
+      left: 50%;
+      top: 44%;
+      transform: translate(-50%, -50%);
+      z-index: 12;
+      text-align: center;
+      width: 90%;
+      font-size: 55px;
+      display: none;
+      animation: eventPop .5s ease;
+    }
+
+    @keyframes eventPop {
+      0% {
+        transform: translate(-50%, -50%) scale(.3);
+        opacity: 0;
+      }
+      70% {
+        transform: translate(-50%, -50%) scale(1.15);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+
+    .map.dark {
+      background:
+        radial-gradient(circle at center, #334155 0%, #020617 65%);
+    }
+
+    .map.fog {
+      background:
+        linear-gradient(90deg, #64748b 0 17%, #cbd5e1 17% 83%, #64748b 83%);
+    }
+
+    .map.flood {
+      background:
+        linear-gradient(
+          180deg,
+          #166534 0%,
+          #0ea5e9 50%,
+          #075985 100%
+        );
+    }
+
+    .map.fire {
+      background:
+        linear-gradient(
+          180deg,
+          #7f1d1d,
+          #ea580c,
+          #7c2d12
+        );
+    }
+
+    .map.bridge {
+      background:
+        linear-gradient(
+          90deg,
+          #14532d 0 17%,
+          #713f12 17% 83%,
+          #14532d 83%
+        );
+    }
+
+    .map.traffic {
+      background:
+        linear-gradient(
+          90deg,
+          #166534 0 17%,
+          #334155 17% 83%,
+          #166534 83%
+        );
+    }
+
+    .map.rock {
+      background:
+        linear-gradient(
+          90deg,
+          #365314 0 17%,
+          #57534e 17% 83%,
+          #365314 83%
+        );
+    }
+
+    .map.construction {
+      background:
+        linear-gradient(
+          90deg,
+          #14532d 0 17%,
+          #52525b 17% 83%,
+          #14532d 83%
+        );
+    }
+
+    .map.animal {
+      background:
+        linear-gradient(
+          90deg,
+          #166534 0 17%,
+          #4d7c0f 17% 83%,
+          #166534 83%
+        );
+    }
+
+    /* =========================
+       CONTENT
+    ========================= */
+
+    .content {
+      padding: 0 12px;
+    }
+
+    .question-card {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 20px;
+      padding: 17px;
+      margin-bottom: 12px;
+    }
+
+    .question-label {
+      color: #38bdf8;
+      font-weight: 1000;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .question-text {
+      font-size: 21px;
+      line-height: 1.35;
+      font-weight: 900;
+    }
+
+    .answers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .answer-button {
+      min-height: 67px;
+      border: 2px solid #334155;
+      border-radius: 17px;
+      background: #1e293b;
+      color: white;
+      padding: 10px;
+      font-size: 17px;
+      font-weight: 900;
+    }
+
+    .answer-button:active {
+      transform: scale(.97);
+    }
+
+    .answer-button.correct {
+      background: #166534;
+      border-color: #22c55e;
+    }
+
+    .answer-button.wrong {
+      background: #991b1b;
+      border-color: #ef4444;
+    }
+
+    .answer-button:disabled {
+      opacity: .65;
+    }
+
+    /* =========================
+       PANEL
+    ========================= */
+
+    .panel {
+      margin-top: 12px;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 20px;
+      padding: 16px;
+    }
+
+    .panel-title {
+      font-size: 20px;
+      font-weight: 1000;
+      margin-bottom: 5px;
+    }
+
+    .panel-subtitle {
+      color: #94a3b8;
+      font-size: 13px;
+      margin-bottom: 13px;
+      line-height: 1.4;
+    }
+
+    .items {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .item-button {
+      min-height: 90px;
+      border: 2px solid #334155;
+      border-radius: 17px;
+      background: #1e293b;
+      color: white;
+      padding: 10px;
+      font-weight: 900;
+    }
+
+    .item-icon {
+      font-size: 34px;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .item-button:active {
+      transform: scale(.97);
+    }
+
+    .item-button.selected {
+      border-color: #38bdf8;
+      background: #0c4a6e;
+    }
+
+    .routes {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
+
+    .route-button {
+      min-height: 75px;
+      border: 2px solid #334155;
+      border-radius: 16px;
+      background: #1e293b;
+      color: white;
+      font-size: 15px;
+      font-weight: 1000;
+    }
+
+    .route-button:active {
+      transform: scale(.96);
+    }
+
+    /* =========================
+       REACTION
+    ========================= */
+
+    .reaction {
+      margin-top: 12px;
+      padding: 16px;
+      border-radius: 18px;
+      text-align: center;
+      font-size: 17px;
+      line-height: 1.4;
+      font-weight: 900;
+      background: #172554;
+      border: 2px solid #2563eb;
+      animation: reactionPop .4s ease;
+    }
+
+    .reaction.good {
+      background: #052e16;
+      border-color: #22c55e;
+    }
+
+    .reaction.bad {
+      background: #431407;
+      border-color: #f97316;
+    }
+
+    @keyframes reactionPop {
+      from {
+        opacity: 0;
+        transform: scale(.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .continue-button {
+      width: 100%;
+      margin-top: 13px;
+      padding: 16px;
+      border: 0;
+      border-radius: 17px;
+      background: #2563eb;
+      color: white;
+      font-size: 18px;
+      font-weight: 1000;
+    }
+
+    .continue-button:active {
+      transform: scale(.98);
+    }
+
+    /* =========================
+       END
+    ========================= */
+
+    #endScreen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background:
+        radial-gradient(circle at top, #1e3a8a, #020617 65%);
+    }
+
+    .end-card {
+      width: min(440px, 100%);
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 26px;
+      padding: 30px 20px;
+      text-align: center;
+    }
+
+    .end-icon {
+      font-size: 75px;
+    }
+
+    .end-title {
+      font-size: 30px;
+      font-weight: 1000;
+      margin: 10px 0;
+    }
+
+    .final-score {
+      font-size: 50px;
+      font-weight: 1000;
+      color: #facc15;
+      margin: 15px 0;
+    }
+
+    .end-info {
+      color: #cbd5e1;
+      line-height: 1.7;
+    }
+
+    /* =========================
+       FLASHLIGHT
+    ========================= */
+
+    .flashlight {
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      pointer-events: none;
+      display: none;
+      background:
+        radial-gradient(
+          circle at 50% 62%,
+          rgba(255,255,220,.85) 0 9%,
+          rgba(255,255,220,.4) 15%,
+          rgba(0,0,0,.96) 47%
+        );
+    }
+
+    .flashlight.active {
+      display: block;
+    }
+
+    /* =========================
+       SMALL DEVICES
+    ========================= */
+
+    @media (max-width: 360px) {
+      .stats {
+        gap: 3px;
+      }
+
+      .stat {
+        padding: 6px 5px;
+        font-size: 11px;
+      }
+
+      .question-text {
+        font-size: 19px;
+      }
+
+      .answer-button {
+        font-size: 15px;
+      }
+
+      .map {
+        height: 215px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =========================
+       START SCREEN
+  ========================== -->
+
+  <section id="startScreen">
+
+    <div class="start-card">
+
+      <div class="logo">🚑</div>
+
+      <div class="title">
+        CUỘC ĐUA CỨU HỘ
+      </div>
+
+      <div class="subtitle">
+        Trả lời thật nhanh, chọn đúng dụng cụ,
+        chọn đúng đường và đưa xe cứu thương
+        về đích!
+      </div>
+
+      <label class="label">
+        Mã phòng
+      </label>
+
+      <input
+        id="roomCodeInput"
+        class="input"
+        type="text"
+        maxlength="6"
+        placeholder="VD: A7K2P9"
+        autocomplete="off"
+      >
+
+      <label class="label">
+        Tên đội
+      </label>
+
+      <input
+        id="teamNameInput"
+        class="input team"
+        type="text"
+        maxlength="30"
+        placeholder="VD: Đội Mặt Trời"
+        autocomplete="off"
+      >
+
+      <button
+        id="startButton"
+        class="start-button"
+        type="button"
+      >
+        🚑 VÀO PHÒNG
+      </button>
+
+      <button
+        id="startSoundButton"
+        class="sound-start"
+        type="button"
+      >
+        🔊 Âm thanh: BẬT
+      </button>
+
+      <div
+        id="connectionStatus"
+        class="connection"
+      >
+        Đang kết nối Firebase...
+      </div>
+
+      <div
+        id="startError"
+        class="error hidden"
+      ></div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =========================
+       GAME SCREEN
+  ========================== -->
+
+  <section
+    id="gameScreen"
+    class="hidden"
+  >
+
+    <header class="game-header">
+
+      <div class="header-grid">
+
+        <div class="team-header">
+          <div
+            id="gameTeamName"
+            class="team-name"
+          >
+            -
+          </div>
+
+          <div
+            id="stageText"
+            class="stage-text"
+          >
+            Chặng 1 / 10
+          </div>
+        </div>
+
+        <div class="stats">
+
+          <div
+            id="scoreText"
+            class="stat"
+          >
+            ⭐ 0
+          </div>
+
+          <div
+            id="heartText"
+            class="stat"
+          >
+            ❤️❤️❤️
+          </div>
+
+          <button
+            id="soundButton"
+            class="sound-button"
+            type="button"
+          >
+            🔊
+          </button>
+
+        </div>
+
+      </div>
+
+    </header>
+
+
+    <div class="timer-area">
+
+      <div
+        id="timerText"
+        class="timer"
+      >
+        20
+      </div>
+
+      <div class="timer-track">
+        <div
+          id="timerFill"
+          class="timer-fill"
+        ></div>
+      </div>
+
+    </div>
+
+
+    <!-- MAP -->
+
+    <div class="map-wrap">
+
+      <div
+        id="map"
+        class="map"
+      >
+
+        <div class="road-line"></div>
+        <div class="road-edge-left"></div>
+        <div class="road-edge-right"></div>
+
+        <div class="grass-dot" style="left:4%;top:12%">🌳</div>
+        <div class="grass-dot" style="left:8%;top:58%">🌿</div>
+        <div class="grass-dot" style="left:88%;top:22%">🌳</div>
+        <div class="grass-dot" style="left:92%;top:67%">🌿</div>
+        <div class="grass-dot" style="left:4%;top:84%">🌱</div>
+        <div class="grass-dot" style="left:87%;top:85%">🌱</div>
+
+        <div
+          id="mapEvent"
+          class="map-event"
+        >
+        </div>
+
+        <div
+          id="flashlight"
+          class="flashlight"
+        ></div>
+
+        <div
+          id="ambulance"
+          class="ambulance"
+        >
+          🚑
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- MAIN QUESTION -->
+
+    <main class="content">
+
+      <div
+        id="questionArea"
+        class="question-card"
+      >
+
+        <div class="question-label">
+          🧠 CÂU HỎI NHIỆM VỤ
+        </div>
+
+        <div
+          id="questionText"
+          class="question-text"
+        >
+          Đang tải...
+        </div>
+
+      </div>
+
+      <div
+        id="answers"
+        class="answers"
+      >
+      </div>
+
+
+      <!-- ITEM -->
+
+      <div
+        id="itemPanel"
+        class="panel hidden"
+      >
+
+        <div class="panel-title">
+          🧰 Chọn dụng cụ
+        </div>
+
+        <div class="panel-subtitle">
+          Chọn một dụng cụ để chuẩn bị cho tình huống
+          trên đường.
+        </div>
+
+        <div
+          id="items"
+          class="items"
+        >
+        </div>
+
+      </div>
+
+
+      <!-- ROUTE -->
+
+      <div
+        id="routePanel"
+        class="panel hidden"
+      >
+
+        <div class="panel-title">
+          🛣️ Chọn đường đi
+        </div>
+
+        <div class="panel-subtitle">
+          Tình huống trên đường sẽ chỉ xuất hiện
+          sau khi đội chọn hướng.
+        </div>
+
+        <div
+          id="routes"
+          class="routes"
+        >
+
+          <button
+            class="route-button"
+            type="button"
+            data-route="left"
+          >
+            ⬅️<br>
+            TRÁI
+          </button>
+
+          <button
+            class="route-button"
+            type="button"
+            data-route="straight"
+          >
+            ⬆️<br>
+            THẲNG
+          </button>
+
+          <button
+            class="route-button"
+            type="button"
+            data-route="right"
+          >
+            ➡️<br>
+            PHẢI
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- REACTION -->
+
+      <div
+        id="reaction"
+        class="reaction hidden"
+      >
+      </div>
+
+
+      <!-- SECONDARY QUESTION -->
+
+      <div
+        id="secondaryPanel"
+        class="panel hidden"
+      >
+
+        <div class="panel-title">
+          🧠 Câu hỏi xử lý tình huống
+        </div>
+
+        <div class="panel-subtitle">
+          Trả lời đúng: +2 điểm<br>
+          Trả lời sai hoặc hết giờ: -2 điểm
+        </div>
+
+        <div
+          id="secondaryQuestion"
+          class="question-text"
+          style="font-size:18px;margin-bottom:13px"
+        >
+        </div>
+
+        <div
+          id="secondaryAnswers"
+          class="answers"
+        >
+        </div>
+
+      </div>
+
+
+      <!-- CONTINUE -->
+
+      <button
+        id="continueButton"
+        class="continue-button hidden"
+        type="button"
+      >
+        ➡️ TIẾP TỤC
+      </button>
+
+    </main>
+
+  </section>
+
+
+  <!-- =========================
+       END SCREEN
+  ========================== -->
+
+  <section
+    id="endScreen"
+    class="hidden"
+  >
+
+    <div class="end-card">
+
+      <div
+        id="endIcon"
+        class="end-icon"
+      >
+        🏆
+      </div>
+
+      <div
+        id="endTitle"
+        class="end-title"
+      >
+        Hoàn thành!
+      </div>
+
+      <div class="end-info">
+        Đội:
+        <strong id="endTeamName">-</strong>
+      </div>
+
+      <div
+        id="finalScore"
+        class="final-score"
+      >
+        0
+      </div>
+
+      <div class="end-info">
+        điểm
+      </div>
+
+      <div
+        id="endHearts"
+        class="end-info"
+        style="margin-top:10px"
+      >
+        ❤️❤️❤️
+      </div>
+
+      <div
+        id="endMessage"
+        class="end-info"
+        style="margin-top:12px"
+      >
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- MUSIC -->
+
+  <audio
+    id="bgMusic"
+    src="music.mp3"
+    loop
+    preload="auto"
+  ></audio>
+
+
+  <!-- =========================
+       FIREBASE + GAME
+  ========================== -->
+
+  <script type="module">
+
+    import {
+      initializeApp
+    } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+
+    import {
+      getAuth,
+      signInAnonymously,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      setDoc,
+      updateDoc,
+      onSnapshot,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+
+    /* =====================================================
+       FIREBASE CONFIG
+       Project: thunghiem-28f4f
+    ====================================================== */
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBdw2TkgRIm3hT4sfjSWnQEMLM7kDb8TDo",
+      authDomain: "thunghiem-28f4f.firebaseapp.com",
+      projectId: "thunghiem-28f4f",
+      storageBucket: "thunghiem-28f4f.firebasestorage.app",
+      messagingSenderId: "119403207767",
+      appId: "1:119403207767:web:f970f4625368e60d41d712",
+      measurementId: "G-NM5KPVVC4G"
+    };
+
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+
+    /* =====================================================
+       DOM
+    ====================================================== */
+
+    const startScreen = document.getElementById("startScreen");
+    const gameScreen = document.getElementById("gameScreen");
+    const endScreen = document.getElementById("endScreen");
+
+    const roomCodeInput = document.getElementById("roomCodeInput");
+    const teamNameInput = document.getElementById("teamNameInput");
+
+    const startButton = document.getElementById("startButton");
+    const startSoundButton = document.getElementById("startSoundButton");
+
+    const connectionStatus = document.getElementById("connectionStatus");
+    const startError = document.getElementById("startError");
+
+    const gameTeamName = document.getElementById("gameTeamName");
+    const stageText = document.getElementById("stageText");
+    const scoreText = document.getElementById("scoreText");
+    const heartText = document.getElementById("heartText");
+
+    const soundButton = document.getElementById("soundButton");
+
+    const timerText = document.getElementById("timerText");
+    const timerFill = document.getElementById("timerFill");
+
+    const map = document.getElementById("map");
+    const mapEvent = document.getElementById("mapEvent");
+    const ambulance = document.getElementById("ambulance");
+    const flashlight = document.getElementById("flashlight");
+
+    const questionText = document.getElementById("questionText");
+    const answers = document.getElementById("answers");
+
+    const itemPanel = document.getElementById("itemPanel");
+    const itemsContainer = document.getElementById("items");
+
+    const routePanel = document.getElementById("routePanel");
+
+    const reaction = document.getElementById("reaction");
+
+    const secondaryPanel = document.getElementById("secondaryPanel");
+    const secondaryQuestion =
+      document.getElementById("secondaryQuestion");
+    const secondaryAnswers =
+      document.getElementById("secondaryAnswers");
+
+    const continueButton =
+      document.getElementById("continueButton");
+
+
+    /* =====================================================
+       GAME DATA
+    ====================================================== */
+
+    const mainQuestions = [
+
+      {
+        q: "Một giờ có bao nhiêu phút?",
+        answers: ["30", "45", "60", "90"],
+        correct: "60"
+      },
+
+      {
+        q: "5 × 6 bằng bao nhiêu?",
+        answers: ["20", "25", "30", "35"],
+        correct: "30"
+      },
+
+      {
+        q: "Thủ đô của Việt Nam là gì?",
+        answers: ["Huế", "Hà Nội", "Đà Nẵng", "TP. Hồ Chí Minh"],
+        correct: "Hà Nội"
+      },
+
+      {
+        q: "Nước sôi ở nhiệt độ bao nhiêu độ C trong điều kiện bình thường?",
+        answers: ["50°C", "75°C", "100°C", "150°C"],
+        correct: "100°C"
+      },
+
+      {
+        q: "Hình tam giác có bao nhiêu cạnh?",
+        answers: ["2", "3", "4", "5"],
+        correct: "3"
+      },
+
+      {
+        q: "Mặt trời mọc ở hướng nào?",
+        answers: ["Tây", "Nam", "Bắc", "Đông"],
+        correct: "Đông"
+      },
+
+      {
+        q: "Một tuần có bao nhiêu ngày?",
+        answers: ["5", "6", "7", "8"],
+        correct: "7"
+      },
+
+      {
+        q: "10 + 15 bằng bao nhiêu?",
+        answers: ["20", "25", "30", "35"],
+        correct: "25"
+      },
+
+      {
+        q: "Theo cách chia phổ biến ở miền Bắc, một năm có mấy mùa?",
+        answers: ["2", "3", "4", "5"],
+        correct: "4"
+      },
+
+      {
+        q: "Hành tinh chúng ta đang sống là gì?",
+        answers: ["Sao Hỏa", "Sao Kim", "Trái Đất", "Sao Mộc"],
+        correct: "Trái Đất"
+      }
+
+    ];
+
+
+    /*
+      Mỗi stage có 3 tình huống riêng.
+      Tổng cộng 30 tình huống.
+    */
+
+    const stages = [
+
+      /* STAGE 1 */
+
+      {
+        routes: {
+          left: {
+            title: "🌉 Cây cầu nhỏ phía trước bị gãy",
+            type: "bridge",
+            suitable: "rope"
+          },
+
+          straight: {
+            title: "🌑 Đường hầm phía trước rất tối",
+            type: "dark",
+            suitable: "flashlight"
+          },
+
+          right: {
+            title: "🚗 Xe cộ đang ùn lại",
+            type: "traffic",
+            suitable: "siren"
+          }
+        }
+      },
+
+
+      /* STAGE 2 */
+
+      {
+        routes: {
+          left: {
+            title: "🌫️ Sương mù dày che kín con đường",
+            type: "fog",
+            suitable: "flashlight"
+          },
+
+          straight: {
+            title: "🪨 Một tảng đá lớn chắn ngang đường",
+            type: "rock",
+            suitable: "rope"
+          },
+
+          right: {
+            title: "🐕 Một chú chó đang đứng giữa đường",
+            type: "animal",
+            suitable: "siren"
+          }
+        }
+      },
+
+
+      /* STAGE 3 */
+
+      {
+        routes: {
+          left: {
+            title: "🔥 Một đám cháy nhỏ xuất hiện bên đường",
+            type: "fire",
+            suitable: "extinguisher"
+          },
+
+          straight: {
+            title: "🌊 Nước ngập gần hết mặt đường",
+            type: "flood",
+            suitable: "shield"
+          },
+
+          right: {
+            title: "🚧 Công trường đang thi công",
+            type: "construction",
+            suitable: "map"
+          }
+        }
+      },
+
+
+      /* STAGE 4 */
+
+      {
+        routes: {
+          left: {
+            title: "🌑 Con hẻm bên trái mất điện hoàn toàn",
+            type: "dark",
+            suitable: "flashlight"
+          },
+
+          straight: {
+            title: "🚘 Một chiếc xe dừng giữa đường",
+            type: "car",
+            suitable: "siren"
+          },
+
+          right: {
+            title: "🪢 Con đường dốc cần một sợi dây hỗ trợ",
+            type: "rock",
+            suitable: "rope"
+          }
+        }
+      },
+
+
+      /* STAGE 5 */
+
+      {
+        routes: {
+          left: {
+            title: "🌉 Cây cầu gỗ rung lắc mạnh",
+            type: "bridge",
+            suitable: "rope"
+          },
+
+          straight: {
+            title: "🔥 Khói và lửa bốc lên phía trước",
+            type: "fire",
+            suitable: "extinguisher"
+          },
+
+          right: {
+            title: "🌫️ Sương mù phủ kín ngã rẽ",
+            type: "fog",
+            suitable: "map"
+          }
+        }
+      },
+
+
+      /* STAGE 6 */
+
+      {
+        routes: {
+          left: {
+            title: "🚧 Đường bên trái đang sửa chữa",
+            type: "construction",
+            suitable: "map"
+          },
+
+          straight: {
+            title: "🌊 Một đoạn đường bị ngập nước",
+            type: "flood",
+            suitable: "shield"
+          },
+
+          right: {
+            title: "🚑 Xe cứu thương cần hỗ trợ y tế",
+            type: "help",
+            suitable: "firstaid"
+          }
+        }
+      },
+
+
+      /* STAGE 7 */
+
+      {
+        routes: {
+          left: {
+            title: "🪨 Vật liệu từ nhà đổ xuống đường",
+            type: "rock",
+            suitable: "rope"
+          },
+
+          straight: {
+            title: "🚗 Dòng xe phía trước đi rất chậm",
+            type: "traffic",
+            suitable: "siren"
+          },
+
+          right: {
+            title: "🌑 Đường núi tối om",
+            type: "dark",
+            suitable: "flashlight"
+          }
+        }
+      },
+
+
+      /* STAGE 8 */
+
+      {
+        routes: {
+          left: {
+            title: "🐄 Một con vật lớn đang đứng giữa đường",
+            type: "animal",
+            suitable: "siren"
+          },
+
+          straight: {
+            title: "🔥 Khói nóng tràn ra từ căn nhà bên đường",
+            type: "fire",
+            suitable: "extinguisher"
+          },
+
+          right: {
+            title: "🌉 Cây cầu phía trước có một khe nứt",
+            type: "bridge",
+            suitable: "rope"
+          }
+        }
+      },
+
+
+      /* STAGE 9 */
+
+      {
+        routes: {
+          left: {
+            title: "🌊 Mưa lớn khiến đường ngập sâu",
+            type: "flood",
+            suitable: "shield"
+          },
+
+          straight: {
+            title: "🌫️ Sương mù dày đặc trên đường cao tốc",
+            type: "fog",
+            suitable: "map"
+          },
+
+          right: {
+            title: "🚧 Một đoạn đường đang dựng rào chắn",
+            type: "construction",
+            suitable: "map"
+          }
+        }
+      },
+
+
+      /* STAGE 10 */
+
+      {
+        routes: {
+          left: {
+            title: "🚧 Cổng bệnh viện đang sửa chữa",
+            type: "construction",
+            suitable: "map"
+          },
+
+          straight: {
+            title: "🚑 Một xe cứu thương khác cần hỗ trợ",
+            type: "help",
+            suitable: "firstaid"
+          },
+
+          right: {
+            title: "🚗 Xe cộ chen kín trước bệnh viện",
+            type: "traffic",
+            suitable: "siren"
+          }
+        }
+      }
+
+    ];
+
+
+    const itemData = {
+
+      flashlight: {
+        icon: "🔦",
+        name: "Đèn pin"
+      },
+
+      siren: {
+        icon: "🚨",
+        name: "Còi cứu hộ"
+      },
+
+      rope: {
+        icon: "🪢",
+        name: "Dây cứu hộ"
+      },
+
+      map: {
+        icon: "🗺️",
+        name: "Bản đồ"
+      },
+
+      shield: {
+        icon: "🛡️",
+        name: "Khiên chắn"
+      },
+
+      fuel: {
+        icon: "⛽",
+        name: "Nhiên liệu"
+      },
+
+      extinguisher: {
+        icon: "🧯",
+        name: "Bình chữa cháy"
+      },
+
+      firstaid: {
+        icon: "🩹",
+        name: "Túi sơ cứu"
+      }
+
+    };
+
+
+    /*
+      Câu hỏi phụ theo loại tình huống.
+      Không ảnh hưởng đến số tim.
+    */
+
+    const secondaryQuestions = {
+
+      bridge: {
+        q: "Khi gặp cây cầu có dấu hiệu không an toàn, nên làm gì?",
+        answers: [
+          "Cố chạy thật nhanh qua",
+          "Dừng lại và tìm đường an toàn",
+          "Nhắm mắt chạy qua",
+          "Bấm còi liên tục"
+        ],
+        correct: "Dừng lại và tìm đường an toàn"
+      },
+
+      dark: {
+        q: "Khi đi trong khu vực rất tối, vật dụng nào giúp quan sát tốt hơn?",
+        answers: [
+          "Đèn pin",
+          "Gối",
+          "Khăn",
+          "Cốc nước"
+        ],
+        correct: "Đèn pin"
+      },
+
+      traffic: {
+        q: "Khi xe cứu thương gặp ùn tắc, tín hiệu nào giúp các xe khác nhận biết?",
+        answers: [
+          "Đèn và còi ưu tiên",
+          "Tắt đèn",
+          "Mở cửa xe",
+          "Bấm điện thoại"
+        ],
+        correct: "Đèn và còi ưu tiên"
+      },
+
+      fog: {
+        q: "Trong sương mù dày, điều gì quan trọng nhất?",
+        answers: [
+          "Chạy nhanh hơn",
+          "Quan sát và giảm tốc độ",
+          "Tắt đèn",
+          "Đi sát xe trước"
+        ],
+        correct: "Quan sát và giảm tốc độ"
+      },
+
+      rock: {
+        q: "Khi có vật cản lớn trên đường, nên làm gì?",
+        answers: [
+          "Đâm xuyên qua",
+          "Dừng và xử lý an toàn",
+          "Tăng tốc",
+          "Bỏ xe"
+        ],
+        correct: "Dừng và xử lý an toàn"
+      },
+
+      animal: {
+        q: "Khi gặp động vật trên đường, cách xử lý an toàn là gì?",
+        answers: [
+          "Giảm tốc độ và tránh",
+          "Tăng tốc",
+          "Bấm còi thật lâu",
+          "Đi sát con vật"
+        ],
+        correct: "Giảm tốc độ và tránh"
+      },
+
+      fire: {
+        q: "Khi phát hiện đám cháy nhỏ, vật dụng nào phù hợp?",
+        answers: [
+          "Bình chữa cháy",
+          "Bóng bay",
+          "Ô",
+          "Cặp sách"
+        ],
+        correct: "Bình chữa cháy"
+      },
+
+      flood: {
+        q: "Khi đường bị ngập sâu, điều gì nên được ưu tiên?",
+        answers: [
+          "Kiểm tra độ an toàn",
+          "Tăng tốc tối đa",
+          "Đi vào vùng sâu nhất",
+          "Tắt đèn"
+        ],
+        correct: "Kiểm tra độ an toàn"
+      },
+
+      construction: {
+        q: "Khi gặp khu vực thi công, nên làm gì?",
+        answers: [
+          "Đi theo biển báo và chỉ dẫn",
+          "Đi xuyên qua rào chắn",
+          "Tăng tốc",
+          "Bỏ qua biển báo"
+        ],
+        correct: "Đi theo biển báo và chỉ dẫn"
+      },
+
+      car: {
+        q: "Khi gặp xe dừng giữa đường, nên làm gì?",
+        answers: [
+          "Giảm tốc độ và quan sát",
+          "Đâm vào xe",
+          "Nhắm mắt chạy",
+          "Tắt đèn"
+        ],
+        correct: "Giảm tốc độ và quan sát"
+      },
+
+      help: {
+        q: "Khi một đội cứu hộ khác cần hỗ trợ y tế, vật dụng nào phù hợp?",
+        answers: [
+          "Túi sơ cứu",
+          "Bản đồ",
+          "Nhiên liệu",
+          "Đèn pin"
+        ],
+        correct: "Túi sơ cứu"
+      }
+
+    };
+
+
+    /* =====================================================
+       HUMOR
+    ====================================================== */
+
+    const goodReactions = [
+
+      "😎 Chuẩn bài! Dụng cụ này đúng là sinh ra cho tình huống này!",
+
+      "🚑 Quá hợp lý! Xe cứu thương tiếp tục lao về phía trước!",
+
+      "💪 Chính xác! Đội cứu hộ hôm nay xử lý rất chuyên nghiệp!",
+
+      "✨ Tuyệt vời! Chọn đúng dụng cụ rồi!",
+
+      "🦸 Đội cứu hộ xuất hiện! Tình huống này không làm khó được chúng ta!"
+
+    ];
+
+
+    const badReactions = {
+
+      flashlight:
+        "🔦 Soi rất sáng rồi... nhưng tình huống này đâu cần soi! 😂",
+
+      siren:
+        "🚨 Bấm còi rất oách... nhưng tình huống vẫn chưa được giải quyết! 😂",
+
+      rope:
+        "🪢 Dây đã sẵn sàng... nhưng kéo cái này ở đây thì hơi sai bài! 😂",
+
+      map:
+        "🗺️ Bản đồ rất xịn... nhưng lần này nó chưa phải cứu tinh! 😂",
+
+      shield:
+        "🛡️ Khiên rất chắc... nhưng vấn đề hôm nay lại nằm ở chỗ khác! 😂",
+
+      fuel:
+        "⛽ Xăng đầy bình rồi... tiếc là xăng không giải quyết được chuyện này! 😂",
+
+      extinguisher:
+        "🧯 Bình chữa cháy đã sẵn sàng... nhưng chẳng có gì để dập cả! 😂",
+
+      firstaid:
+        "🩹 Túi sơ cứu rất hữu ích... nhưng tình huống này chưa cần băng bó! 😂"
+
+    };
+
+
+    /* =====================================================
+       STATE
+    ====================================================== */
+
+    let currentUser = null;
+    let roomCode = "";
+    let teamId = "";
+
+    let teamRef = null;
+    let roomRef = null;
+
+    let unsubscribeTeam = null;
+    let unsubscribeRoom = null;
+
+    let state = {
+
+      teamName: "",
+
+      stage: 0,
+
+      score: 0,
+
+      hearts: 3,
+
+      status: "waiting",
+
+      phase: "main",
+
+      selectedItem: null,
+
+      selectedRoute: null,
+
+      mainAnswered: false,
+
+      secondaryAnswered: false
+
+    };
+
+
+    let timerInterval = null;
+    let timerSeconds = 20;
+
+    let secondaryTimerInterval = null;
+    let secondaryTimerSeconds = 10;
+
+    let soundEnabled = true;
+
+
+    /* =====================================================
+       SOUND
+    ====================================================== */
+
+    const bgMusic = document.getElementById("bgMusic");
+
+    function updateSoundButtons() {
+
+      const text = soundEnabled
+        ? "🔊 Âm thanh: BẬT"
+        : "🔇 Âm thanh: TẮT";
+
+      startSoundButton.textContent = text;
+
+      soundButton.textContent = soundEnabled
+        ? "🔊"
+        : "🔇";
+    }
+
+
+    async function startMusic() {
+
+      if (!soundEnabled) {
+        return;
+      }
+
+      try {
+        await bgMusic.play();
+      } catch (error) {
+        console.log("Browser chưa cho autoplay:", error);
+      }
+    }
+
+
+    function toggleSound(event) {
+
+      if (event) {
+        event.stopPropagation();
+      }
+
+      soundEnabled = !soundEnabled;
+
+      updateSoundButtons();
+
+      if (soundEnabled) {
+        startMusic();
+      } else {
+        bgMusic.pause();
+      }
+    }
+
+
+    startSoundButton.addEventListener(
+      "click",
+      toggleSound
+    );
+
+    soundButton.addEventListener(
+      "click",
+      toggleSound
+    );
+
+
+    /* =====================================================
+       AUTH
+    ====================================================== */
+
+    signInAnonymously(auth)
+      .then(() => {
+
+        connectionStatus.textContent =
+          "🟢 Đã kết nối Firebase";
+
+      })
+      .catch((error) => {
+
+        console.error(error);
+
+        connectionStatus.textContent =
+          "🔴 Không thể kết nối Firebase";
+
+        showStartError(
+          "Không thể đăng nhập Firebase. Hãy kiểm tra Authentication → Anonymous đã bật chưa."
+        );
+
+      });
+
+
+    onAuthStateChanged(auth, (user) => {
+
+      if (user) {
+
+        currentUser = user;
+
+        console.log(
+          "Anonymous user:",
+          currentUser.uid
+        );
+
+      }
+
+    });
+
+
+    /* =====================================================
+       START
+    ====================================================== */
+
+    startButton.addEventListener(
+      "click",
+      joinRoom
+    );
+
+
+    async function joinRoom() {
+
+      hideStartError();
+
+      const room = roomCodeInput.value
+        .trim()
+        .toUpperCase();
+
+      const team = teamNameInput.value
+        .trim();
+
+      if (!room) {
+
+        showStartError(
+          "Vui lòng nhập mã phòng."
+        );
+
+        return;
+      }
+
+      if (room.length < 4) {
+
+        showStartError(
+          "Mã phòng không hợp lệ."
+        );
+
+        return;
+      }
+
+      if (!team) {
+
+        showStartError(
+          "Vui lòng nhập tên đội."
+        );
+
+        return;
+      }
+
+      if (!currentUser) {
+
+        showStartError(
+          "Firebase chưa kết nối. Vui lòng chờ vài giây rồi thử lại."
+        );
+
+        return;
+      }
+
+      startButton.disabled = true;
+      startButton.textContent = "⏳ ĐANG VÀO PHÒNG...";
+
+      try {
+
+        roomCode = room;
+        teamId = currentUser.uid;
+
+        roomRef = doc(
+          db,
+          "rooms",
+          roomCode
+        );
+
+        const roomSnap =
+          await getDoc(roomRef);
+
+        if (!roomSnap.exists()) {
+
+          throw new Error(
+            "Không tìm thấy phòng này. Hãy kiểm tra mã phòng."
+          );
+
+        }
+
+        const roomData =
+          roomSnap.data();
+
+        if (
+          roomData.status === "finished"
+        ) {
+
+          throw new Error(
+            "Phòng này đã kết thúc."
+          );
+
+        }
+
+
+        teamRef = doc(
+          db,
+          "rooms",
+          roomCode,
+          "teams",
+          teamId
+        );
+
+
+        const existingTeam =
+          await getDoc(teamRef);
+
+
+        if (existingTeam.exists()) {
+
+          const oldData =
+            existingTeam.data();
+
+          state = {
+
+            ...state,
+
+            ...oldData,
+
+            teamName:
+              oldData.teamName || team,
+
+            stage:
+              Number.isInteger(oldData.stage)
+                ? oldData.stage
+                : 0,
+
+            score:
+              Number(oldData.score || 0),
+
+            hearts:
+              Number(
+                oldData.hearts ?? 3
+              )
+
+          };
+
+        } else {
+
+          state = {
+
+            teamName: team,
+
+            stage: 0,
+
+            score: 0,
+
+            hearts: 3,
+
+            status:
+              roomData.status === "playing"
+                ? "playing"
+                : "waiting",
+
+            phase: "main",
+
+            selectedItem: null,
+
+            selectedRoute: null,
+
+            mainAnswered: false,
+
+            secondaryAnswered: false
+
+          };
+
+
+          await setDoc(
+            teamRef,
+            {
+              teamName: team,
+
+              stage: 0,
+
+              score: 0,
+
+              hearts: 3,
+
+              status: state.status,
+
+              phase: "main",
+
+              selectedItem: null,
+
+              selectedRoute: null,
+
+              mainAnswered: false,
+
+              secondaryAnswered: false,
+
+              joinedAt: serverTimestamp(),
+
+              lastUpdated:
+                serverTimestamp()
+            }
+          );
+
+        }
+
+
+        await updateDoc(
+          teamRef,
+          {
+            teamName: team,
+            lastUpdated:
+              serverTimestamp()
+          }
+        );
+
+
+        startScreen.classList.add("hidden");
+
+        gameScreen.classList.remove("hidden");
+
+        gameTeamName.textContent =
+          state.teamName;
+
+        setupTeamListener();
+
+        setupRoomListener();
+
+        renderState();
+
+        startMusic();
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        showStartError(
+          error.message ||
+          "Không thể vào phòng."
+        );
+
+        startButton.disabled = false;
+
+        startButton.textContent =
+          "🚑 VÀO PHÒNG";
+
+      }
+
+    }
+
+
+    /* =====================================================
+       FIRESTORE LISTENERS
+    ====================================================== */
+
+    function setupTeamListener() {
+
+      if (unsubscribeTeam) {
+        unsubscribeTeam();
+      }
+
+      unsubscribeTeam = onSnapshot(
+        teamRef,
+        (snapshot) => {
+
+          if (!snapshot.exists()) {
+            return;
+          }
+
+          const data =
+            snapshot.data();
+
+          const previousStage =
+            state.stage;
+
+          state = {
+            ...state,
+            ...data
+          };
+
+          state.score =
+            Number(state.score || 0);
+
+          state.hearts =
+            Number(state.hearts ?? 3);
+
+          renderHeader();
+
+          /*
+            Nếu giáo viên reset trạng thái hoặc
+            player reconnect, đồng bộ giao diện.
+          */
+
+          if (
+            state.status === "finished"
+          ) {
+
+            showEndScreen();
+
+            return;
+          }
+
+          /*
+            Chỉ render câu hỏi mới khi stage thay đổi
+            hoặc game vừa bắt đầu.
+          */
+
+          if (
+            previousStage !== state.stage ||
+            gameScreen.classList.contains("hidden") === false
+          ) {
+
+            if (
+              state.status === "playing" &&
+              state.phase === "main"
+            ) {
+
+              /*
+                Không tự reset nếu người chơi đang
+                ở item/route/secondary.
+              */
+
+              if (
+                !state.selectedItem &&
+                !state.selectedRoute
+              ) {
+
+                showMainQuestion();
+
+              }
+
+            }
+
+          }
+
+        },
+        (error) => {
+
+          console.error(
+            "Team listener:",
+            error
+          );
+
+        }
+      );
+
+    }
+
+
+    function setupRoomListener() {
+
+      if (unsubscribeRoom) {
+        unsubscribeRoom();
+      }
+
+      unsubscribeRoom = onSnapshot(
+        roomRef,
+        (snapshot) => {
+
+          if (!snapshot.exists()) {
+            return;
+          }
+
+          const roomData =
+            snapshot.data();
+
+          if (
+            roomData.status === "playing" &&
+            state.status === "waiting"
+          ) {
+
+            state.status = "playing";
+
+            saveState();
+
+            showMainQuestion();
+
+          }
+
+          if (
+            roomData.status === "finished"
+          ) {
+
+            state.status = "finished";
+
+            showEndScreen();
+
+          }
+
+        }
+      );
+
+    }
+
+
+    /* =====================================================
+       SAVE STATE
+    ====================================================== */
+
+    async function saveState(extra = {}) {
+
+      if (!teamRef) {
+        return;
+      }
+
+      try {
+
+        await updateDoc(
+          teamRef,
+          {
+
+            teamName:
+              state.teamName,
+
+            stage:
+              state.stage,
+
+            score:
+              state.score,
+
+            hearts:
+              state.hearts,
+
+            status:
+              state.status,
+
+            phase:
+              state.phase,
+
+            selectedItem:
+              state.selectedItem,
+
+            selectedRoute:
+              state.selectedRoute,
+
+            mainAnswered:
+              state.mainAnswered,
+
+            secondaryAnswered:
+              state.secondaryAnswered,
+
+            lastUpdated:
+              serverTimestamp(),
+
+            ...extra
+
+          }
+        );
+
+      } catch (error) {
+
+        console.error(
+          "Không thể lưu:",
+          error
+        );
+
+      }
+
+    }
+
+
+    /* =====================================================
+       HEADER
+    ====================================================== */
+
+    function renderHeader() {
+
+      gameTeamName.textContent =
+        state.teamName || "-";
+
+      stageText.textContent =
+        `Chặng ${Math.min(state.stage + 1, 10)} / 10`;
+
+      scoreText.textContent =
+        `⭐ ${state.score}`;
+
+      const hearts =
+        Math.max(0, state.hearts);
+
+      heartText.textContent =
+        "❤️".repeat(hearts) +
+        "🖤".repeat(3 - hearts);
+
+    }
+
+
+    /* =====================================================
+       MAIN QUESTION
+    ====================================================== */
+
+    function showMainQuestion() {
+
+      clearAllTimers();
+
+      if (state.hearts <= 0) {
+
+        finishGame(
+          "Hết tim! Nhưng đội đã ghi được số điểm của mình."
+        );
+
+        return;
+      }
+
+      if (state.stage >= 10) {
+
+        finishGame(
+          "Đội đã hoàn thành cả 10 chặng!"
+        );
+
+        return;
+      }
+
+      state.phase = "main";
+
+      state.selectedItem = null;
+
+      state.selectedRoute = null;
+
+      state.mainAnswered = false;
+
+      state.secondaryAnswered = false;
+
+      renderHeader();
+
+      questionText.textContent =
+        mainQuestions[state.stage].q;
+
+      answers.innerHTML = "";
+
+      mainQuestions[state.stage]
+        .answers
+        .forEach(answer => {
+
+          const button =
+            document.createElement("button");
+
+          button.type = "button";
+
+          button.className =
+            "answer-button";
+
+          button.textContent =
+            answer;
+
+          button.addEventListener(
+            "click",
+            () => answerMain(answer, button)
+          );
+
+          answers.appendChild(button);
+
+        });
+
+
+      itemPanel.classList.add("hidden");
+      routePanel.classList.add("hidden");
+      secondaryPanel.classList.add("hidden");
+      continueButton.classList.add("hidden");
+
+      reaction.classList.add("hidden");
+
+      mapEvent.style.display = "none";
+
+      flashlight.classList.remove("active");
+
+      resetMap();
+
+      startMainTimer();
+
+      saveState();
+
+    }
+
+
+    /* =====================================================
+       MAIN TIMER
+    ====================================================== */
+
+    function startMainTimer() {
+
+      clearMainTimer();
+
+      timerSeconds = 20;
+
+      updateTimerUI(
+        timerSeconds,
+        20
+      );
+
+      timerInterval =
+        setInterval(() => {
+
+          timerSeconds--;
+
+          updateTimerUI(
+            timerSeconds,
+            20
+          );
+
+          if (
+            timerSeconds <= 0
+          ) {
+
+            clearMainTimer();
+
+            timeoutMain();
+
+          }
+
+        }, 1000);
+
+    }
+
+
+    function answerMain(answer, button) {
+
+      if (state.mainAnswered) {
+        return;
+      }
+
+      state.mainAnswered = true;
+
+      clearMainTimer();
+
+      const correct =
+        mainQuestions[state.stage].correct;
+
+      const buttons =
+        answers.querySelectorAll("button");
+
+      buttons.forEach(
+        b => b.disabled = true
+      );
+
+
+      if (answer === correct) {
+
+        button.classList.add("correct");
+
+        state.phase = "item";
+
+        showReaction(
+          "🎉 Chính xác! Xe cứu thương tiếp tục tiến về phía trước!",
+          true
+        );
+
+        setTimeout(() => {
+
+          showItemSelection();
+
+        }, 700);
+
+
+      } else {
+
+        button.classList.add("wrong");
+
+        buttons.forEach(b => {
+
+          if (
+            b.textContent === correct
+          ) {
+
+            b.classList.add("correct");
+
+          }
+
+        });
+
+        loseHeart();
+
+      }
+
+    }
+
+
+    function timeoutMain() {
+
+      if (state.mainAnswered) {
+        return;
+      }
+
+      state.mainAnswered = true;
+
+      loseHeart();
+
+    }
+
+
+    function loseHeart() {
+
+      state.score = state.score;
+
+      state.hearts =
+        Math.max(
+          0,
+          state.hearts - 1
+        );
+
+      state.phase = "main";
+
+      renderHeader();
+
+      saveState();
+
+      showReaction(
+        "⏰ Chưa kịp rồi! Đội mất 1 ❤️ và phải chuyển sang chặng tiếp theo.",
+        false
+      );
+
+
+      if (state.hearts <= 0) {
+
+        setTimeout(() => {
+
+          finishGame(
+            "Đội đã hết 3 ❤️."
+          );
+
+        }, 1200);
+
+        return;
+      }
+
+
+      setTimeout(() => {
+
+        nextStage();
+
+      }, 1200);
+
+    }
+
+
+    /* =====================================================
+       ITEM SELECTION
+    ====================================================== */
+
+    function showItemSelection() {
+
+      clearAllTimers();
+
+      state.phase = "item";
+
+      itemPanel.classList.remove("hidden");
+
+      routePanel.classList.add("hidden");
+
+      secondaryPanel.classList.add("hidden");
+
+      continueButton.classList.add("hidden");
+
+      reaction.classList.add("hidden");
+
+      itemsContainer.innerHTML = "";
+
+
+      /*
+        Lấy đúng 3 dụng cụ tương ứng với
+        3 tình huống của chặng.
+      */
+
+      const routes =
+        stages[state.stage].routes;
+
+      const itemTypes = [
+        routes.left.suitable,
+        routes.straight.suitable,
+        routes.right.suitable
+      ];
+
+
+      const uniqueItems =
+        [...new Set(itemTypes)];
+
+
+      uniqueItems.forEach(
+        itemType => {
+
+          const item =
+            itemData[itemType];
+
+          const button =
+            document.createElement("button");
+
+          button.type = "button";
+
+          button.className =
+            "item-button";
+
+          button.innerHTML = `
+            <span class="item-icon">
+              ${item.icon}
+            </span>
+            ${item.name}
+          `;
+
+          button.addEventListener(
+            "click",
+            () => selectItem(
+              itemType,
+              button
+            )
+          );
+
+          itemsContainer.appendChild(
+            button
+          );
+
+        }
+      );
+
+    }
+
+
+    function selectItem(
+      itemType,
+      button
+    ) {
+
+      state.selectedItem =
+        itemType;
+
+      document
+        .querySelectorAll(".item-button")
+        .forEach(
+          b => b.classList.remove("selected")
+        );
+
+      button.classList.add("selected");
+
+      routePanel.classList.remove("hidden");
+
+      showReaction(
+        `${itemData[itemType].icon} Đã chọn ${itemData[itemType].name}. Bây giờ chọn hướng đi!`,
+        true
+      );
+
+      saveState();
+
+    }
+
+
+    /* =====================================================
+       ROUTES
+    ====================================================== */
+
+    document
+      .querySelectorAll(".route-button")
+      .forEach(button => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            const route =
+              button.dataset.route;
+
+            chooseRoute(route);
+
+          }
+        );
+
+      });
+
+
+    function chooseRoute(route) {
+
+      if (!state.selectedItem) {
+
+        showReaction(
+          "🧰 Hãy chọn dụng cụ trước đã!",
+          false
+        );
+
+        return;
+      }
+
+      state.selectedRoute =
+        route;
+
+      state.phase = "route";
+
+      routePanel.classList.add("hidden");
+
+      itemPanel.classList.add("hidden");
+
+      clearAllTimers();
+
+      const routeData =
+        stages[state.stage]
+          .routes[route];
+
+      showRouteEffect(
+        routeData
+      );
+
+
+      setTimeout(() => {
+
+        handleRouteResult(
+          routeData
+        );
+
+      }, 900);
+
+    }
+
+
+    /* =====================================================
+       ROUTE RESULT
+    ====================================================== */
+
+    function handleRouteResult(
+      routeData
+    ) {
+
+      const selected =
+        state.selectedItem;
+
+      const suitable =
+        routeData.suitable;
+
+      if (
+        selected === suitable
+      ) {
+
+        state.score += 3;
+
+        showReaction(
+          randomGoodReaction() +
+          `<br><br>🏆 +3 điểm`,
+          true
+        );
+
+        state.phase =
+          "continue";
+
+        saveState();
+
+        continueButton.classList.remove(
+          "hidden"
+        );
+
+      } else {
+
+        showReaction(
+          `${badReactions[selected] || "😂 Dụng cụ này chưa đúng bài!"}<br><br>` +
+          `<strong>${routeData.title}</strong>`,
+          false
+        );
+
+
+        setTimeout(() => {
+
+          showSecondaryQuestion(
+            routeData.type
+          );
+
+        }, 1300);
+
+      }
+
+    }
+
+
+    /* =====================================================
+       SECONDARY QUESTION
+    ====================================================== */
+
+    function showSecondaryQuestion(
+      type
+    ) {
+
+      clearAllTimers();
+
+      const question =
+        secondaryQuestions[type];
+
+      if (!question) {
+
+        /*
+          Fallback.
+        */
+
+        state.score -= 2;
+
+        state.phase =
+          "continue";
+
+        showReaction(
+          "😅 Tình huống này làm đội mất 2 điểm.",
+          false
+        );
+
+        continueButton.classList.remove(
+          "hidden"
+        );
+
+        saveState();
+
+        return;
+      }
+
+
+      state.phase =
+        "secondary";
+
+      state.secondaryAnswered =
+        false;
+
+
+      secondaryPanel.classList.remove(
+        "hidden"
+      );
+
+      secondaryQuestion.textContent =
+        question.q;
+
+      secondaryAnswers.innerHTML = "";
+
+
+      question.answers.forEach(
+        answer => {
+
+          const button =
+            document.createElement("button");
+
+          button.type = "button";
+
+          button.className =
+            "answer-button";
+
+          button.textContent =
+            answer;
+
+          button.addEventListener(
+            "click",
+            () => answerSecondary(
+              answer,
+              button,
+              question
+            )
+          );
+
+          secondaryAnswers.appendChild(
+            button
+          );
+
+        }
+      );
+
+
+      startSecondaryTimer();
+
+      saveState();
+
+    }
+
+
+    function startSecondaryTimer() {
+
+      clearSecondaryTimer();
+
+      secondaryTimerSeconds = 10;
+
+      updateTimerUI(
+        secondaryTimerSeconds,
+        10
+      );
+
+      secondaryTimerInterval =
+        setInterval(() => {
+
+          secondaryTimerSeconds--;
+
+          updateTimerUI(
+            secondaryTimerSeconds,
+            10
+          );
+
+          if (
+            secondaryTimerSeconds <= 0
+          ) {
+
+            clearSecondaryTimer();
+
+            secondaryTimeout();
+
+          }
+
+        }, 1000);
+
+    }
+
+
+    function answerSecondary(
+      answer,
+      clickedButton,
+      question
+    ) {
+
+      if (
+        state.secondaryAnswered
+      ) {
+        return;
+      }
+
+      state.secondaryAnswered =
+        true;
+
+      clearSecondaryTimer();
+
+      const buttons =
+        secondaryAnswers
+          .querySelectorAll("button");
+
+      buttons.forEach(
+        b => b.disabled = true
+      );
+
+
+      if (
+        answer === question.correct
+      ) {
+
+        clickedButton.classList.add(
+          "correct"
+        );
+
+        state.score += 2;
+
+        showReaction(
+          "🎯 Xử lý tình huống quá tốt! +2 điểm",
+          true
+        );
+
+      } else {
+
+        clickedButton.classList.add(
+          "wrong"
+        );
+
+        buttons.forEach(
+          b => {
+
+            if (
+              b.textContent ===
+              question.correct
+            ) {
+
+              b.classList.add(
+                "correct"
+              );
+
+            }
+
+          }
+        );
+
+        state.score -= 2;
+
+        showReaction(
+          "😅 Chưa đúng rồi! Đội bị -2 điểm. Không mất ❤️ nhé!",
+          false
+        );
+
+      }
+
+
+      state.phase =
+        "continue";
+
+      saveState();
+
+      continueButton.classList.remove(
+        "hidden"
+      );
+
+    }
+
+
+    function secondaryTimeout() {
+
+      if (
+        state.secondaryAnswered
+      ) {
+        return;
+      }
+
+      state.secondaryAnswered =
+        true;
+
+      state.score -= 2;
+
+      state.phase =
+        "continue";
+
+      showReaction(
+        "⏰ Hết giờ! -2 điểm. Yên tâm, không mất ❤️!",
+        false
+      );
+
+      secondaryAnswers
+        .querySelectorAll("button")
+        .forEach(
+          b => b.disabled = true
+        );
+
+      continueButton.classList.remove(
+        "hidden"
+      );
+
+      saveState();
+
+    }
+
+
+    /* =====================================================
+       CONTINUE
+    ====================================================== */
+
+    continueButton.addEventListener(
+      "click",
+      () => {
+
+        if (
+          state.stage >= 9
+        ) {
+
+          finishGame(
+            "Đội đã hoàn thành cả 10 chặng!"
+          );
+
+          return;
+        }
+
+        nextStage();
+
+      }
+    );
+
+
+    function nextStage() {
+
+      clearAllTimers();
+
+      state.stage++;
+
+      state.phase = "main";
+
+      state.selectedItem = null;
+
+      state.selectedRoute = null;
+
+      state.mainAnswered = false;
+
+      state.secondaryAnswered = false;
+
+      renderHeader();
+
+      resetMap();
+
+      saveState();
+
+      showMainQuestion();
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+
+    }
+
+
+    /* =====================================================
+       ROUTE VISUAL
+    ====================================================== */
+
+    function showRouteEffect(
+      routeData
+    ) {
+
+      resetMap();
+
+      mapEvent.textContent =
+        routeEmoji(routeData.type);
+
+      mapEvent.style.display =
+        "block";
+
+      map.classList.add(
+        routeData.type
+      );
+
+
+      if (
+        (
+          routeData.type === "dark" ||
+          routeData.type === "fog"
+        ) &&
+        state.selectedItem ===
+          "flashlight"
+      ) {
+
+        flashlight.classList.add(
+          "active"
+        );
+
+      }
+
+
+      /*
+        Di chuyển xe theo hướng đã chọn.
+      */
+
+      if (
+        state.selectedRoute ===
+        "left"
+      ) {
+
+        ambulance.style.left =
+          "31%";
+
+        ambulance.style.transform =
+          "translateX(-50%) rotate(-8deg)";
+
+      } else if (
+        state.selectedRoute ===
+        "right"
+      ) {
+
+        ambulance.style.left =
+          "69%";
+
+        ambulance.style.transform =
+          "translateX(-50%) rotate(8deg)";
+
+      } else {
+
+        ambulance.style.left =
+          "50%";
+
+        ambulance.style.transform =
+          "translateX(-50%)";
+
+      }
+
+    }
+
+
+    function routeEmoji(type) {
+
+      const emojis = {
+
+        bridge: "🌉",
+
+        dark: "🌑",
+
+        traffic: "🚗🚗🚗",
+
+        fog: "🌫️",
+
+        rock: "🪨",
+
+        animal: "🐕",
+
+        fire: "🔥",
+
+        flood: "🌊",
+
+        construction: "🚧",
+
+        car: "🚘",
+
+        help: "🚑🩹"
+
+      };
+
+      return emojis[type] || "⚠️";
+
+    }
+
+
+    function resetMap() {
+
+      map.className =
+        "map";
+
+      mapEvent.style.display =
+        "none";
+
+      mapEvent.textContent =
+        "";
+
+      flashlight.classList.remove(
+        "active"
+      );
+
+      ambulance.style.left =
+        "50%";
+
+      ambulance.style.transform =
+        "translateX(-50%)";
+
+    }
+
+
+    /* =====================================================
+       REACTION
+    ====================================================== */
+
+    function showReaction(
+      message,
+      good
+    ) {
+
+      reaction.innerHTML =
+        message;
+
+      reaction.className =
+        "reaction " +
+        (good ? "good" : "bad");
+
+      reaction.classList.remove(
+        "hidden"
+      );
+
+    }
+
+
+    function randomGoodReaction() {
+
+      return goodReactions[
+        Math.floor(
+          Math.random() *
+          goodReactions.length
+        )
+      ];
+
+    }
+
+
+    /* =====================================================
+       TIMER UI
+    ====================================================== */
+
+    function updateTimerUI(
+      seconds,
+      total
+    ) {
+
+      timerText.textContent =
+        seconds;
+
+      const percentage =
+        Math.max(
+          0,
+          Math.min(
+            100,
+            (seconds / total) * 100
+          )
+        );
+
+      timerFill.style.width =
+        percentage + "%";
+
+
+      timerText.className =
+        "timer";
+
+      timerFill.className =
+        "timer-fill";
+
+
+      if (
+        seconds <= 5
+      ) {
+
+        timerText.classList.add(
+          "danger"
+        );
+
+        timerFill.classList.add(
+          "danger"
+        );
+
+      } else if (
+        seconds <= 10
+      ) {
+
+        timerText.classList.add(
+          "warning"
+        );
+
+        timerFill.classList.add(
+          "warning"
+        );
+
+      }
+
+    }
+
+
+    function clearMainTimer() {
+
+      if (timerInterval) {
+
+        clearInterval(
+          timerInterval
+        );
+
+        timerInterval = null;
+
+      }
+
+    }
+
+
+    function clearSecondaryTimer() {
+
+      if (
+        secondaryTimerInterval
+      ) {
+
+        clearInterval(
+          secondaryTimerInterval
+        );
+
+        secondaryTimerInterval =
+          null;
+
+      }
+
+    }
+
+
+    function clearAllTimers() {
+
+      clearMainTimer();
+
+      clearSecondaryTimer();
+
+    }
+
+
+    /* =====================================================
+       END
+    ====================================================== */
+
+    async function finishGame(
+      message
+    ) {
+
+      clearAllTimers();
+
+      state.status =
+        "finished";
+
+      state.phase =
+        "finished";
+
+      await saveState();
+
+      showEndScreen(
+        message
+      );
+
+    }
+
+
+    function showEndScreen(
+      message = ""
+    ) {
+
+      clearAllTimers();
+
+      gameScreen.classList.add(
+        "hidden"
+      );
+
+      startScreen.classList.add(
+        "hidden"
+      );
+
+      endScreen.classList.remove(
+        "hidden"
+      );
+
+
+      document.getElementById(
+        "endTeamName"
+      ).textContent =
+        state.teamName;
+
+
+      document.getElementById(
+        "finalScore"
+      ).textContent =
+        state.score;
+
+
+      document.getElementById(
+        "endHearts"
+      ).textContent =
+        "❤️".repeat(
+          Math.max(0, state.hearts)
+        ) +
+        "🖤".repeat(
+          Math.max(0, 3 - state.hearts)
+        );
+
+
+      if (
+        state.hearts <= 0
+      ) {
+
+        document.getElementById(
+          "endIcon"
+        ).textContent =
+          "🚑";
+
+        document.getElementById(
+          "endTitle"
+        ).textContent =
+          "Cuộc cứu hộ kết thúc";
+
+      } else {
+
+        document.getElementById(
+          "endIcon"
+        ).textContent =
+          "🏆";
+
+        document.getElementById(
+          "endTitle"
+        ).textContent =
+          "Hoàn thành!";
+
+      }
+
+
+      document.getElementById(
+        "endMessage"
+      ).textContent =
+        message ||
+        "Điểm của đội đã được lưu trên bảng giáo viên.";
+
+    }
+
+
+    /* =====================================================
+       START ERROR
+    ====================================================== */
+
+    function showStartError(
+      message
+    ) {
+
+      startError.textContent =
+        message;
+
+      startError.classList.remove(
+        "hidden"
+      );
+
+    }
+
+
+    function hideStartError() {
+
+      startError.classList.add(
+        "hidden"
+      );
+
+      startError.textContent =
+        "";
+
+    }
+
+
+    /* =====================================================
+       INITIAL UI
+    ====================================================== */
+
+    updateSoundButtons();
+
+    roomCodeInput.addEventListener(
+      "input",
+      () => {
+
+        roomCodeInput.value =
+          roomCodeInput.value
+            .toUpperCase()
+            .replace(
+              /[^A-Z0-9]/g,
+              ""
+            );
+
+      }
+    );
+
+
+    /*
+      Cho phép Enter để vào phòng.
+    */
+
+    roomCodeInput.addEventListener(
+      "keydown",
+      event => {
+
+        if (
+          event.key === "Enter"
+        ) {
+
+          teamNameInput.focus();
+
+        }
+
+      }
+    );
+
+
+    teamNameInput.addEventListener(
+      "keydown",
+      event => {
+
+        if (
+          event.key === "Enter"
+        ) {
+
+          joinRoom();
+
+        }
+
+      }
+    );
+
+  </script>
+
+</body>
+</html>

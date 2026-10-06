@@ -1,0 +1,2155 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>👩‍🏫 Bảng Giáo Viên - Cuộc Đua Cứu Hộ</title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #020617;
+      color: white;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+
+    /* =========================
+       HEADER
+    ========================= */
+
+    header {
+      background:
+        linear-gradient(
+          135deg,
+          #172554,
+          #0f172a
+        );
+
+      border-bottom: 1px solid #334155;
+
+      padding: 20px;
+
+      position: sticky;
+      top: 0;
+
+      z-index: 100;
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: auto;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      font-size: 48px;
+    }
+
+    .brand-title {
+      font-size: 25px;
+      font-weight: 1000;
+    }
+
+    .brand-subtitle {
+      color: #94a3b8;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+
+    /* =========================
+       MAIN
+    ========================= */
+
+    main {
+      max-width: 1200px;
+      margin: auto;
+      padding: 25px 18px 50px;
+    }
+
+
+    /* =========================
+       ROOM CONTROL
+    ========================= */
+
+    .control-card {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 22px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .control-title {
+      font-size: 20px;
+      font-weight: 1000;
+      margin-bottom: 15px;
+    }
+
+    .room-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .room-code {
+      min-width: 190px;
+      padding: 15px 20px;
+
+      background: #020617;
+      border: 2px solid #38bdf8;
+      border-radius: 15px;
+
+      color: #facc15;
+
+      font-size: 27px;
+      font-weight: 1000;
+
+      letter-spacing: 5px;
+      text-align: center;
+    }
+
+    .button {
+      border: 0;
+      border-radius: 14px;
+      padding: 13px 17px;
+      font-weight: 900;
+      color: white;
+    }
+
+    .button-blue {
+      background: #2563eb;
+    }
+
+    .button-green {
+      background: #16a34a;
+    }
+
+    .button-red {
+      background: #dc2626;
+    }
+
+    .button-gray {
+      background: #334155;
+    }
+
+    .button:hover {
+      filter: brightness(1.1);
+    }
+
+    .button:active {
+      transform: scale(.98);
+    }
+
+
+    /* =========================
+       STATUS
+    ========================= */
+
+    .room-status {
+      margin-top: 15px;
+
+      padding: 12px 15px;
+
+      border-radius: 13px;
+
+      background: #111827;
+
+      color: #cbd5e1;
+
+      font-size: 14px;
+    }
+
+    .room-status.playing {
+      color: #86efac;
+      border: 1px solid #166534;
+    }
+
+    .room-status.waiting {
+      color: #facc15;
+      border: 1px solid #854d0e;
+    }
+
+    .room-status.finished {
+      color: #fca5a5;
+      border: 1px solid #991b1b;
+    }
+
+
+    /* =========================
+       SUMMARY
+    ========================= */
+
+    .summary {
+      display: grid;
+
+      grid-template-columns:
+        repeat(4, 1fr);
+
+      gap: 12px;
+
+      margin-bottom: 20px;
+    }
+
+    .summary-card {
+      background: #0f172a;
+
+      border: 1px solid #334155;
+
+      border-radius: 17px;
+
+      padding: 16px;
+    }
+
+    .summary-number {
+      font-size: 28px;
+      font-weight: 1000;
+    }
+
+    .summary-label {
+      color: #94a3b8;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+
+    /* =========================
+       TEAMS
+    ========================= */
+
+    .section-title {
+      font-size: 23px;
+      font-weight: 1000;
+      margin: 20px 0 12px;
+    }
+
+    #teamsGrid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(
+          auto-fit,
+          minmax(280px, 1fr)
+        );
+
+      gap: 15px;
+    }
+
+    .team-card {
+      position: relative;
+
+      background: #0f172a;
+
+      border: 1px solid #334155;
+
+      border-radius: 20px;
+
+      padding: 17px;
+
+      overflow: hidden;
+    }
+
+    .team-card.playing {
+      border-color: #2563eb;
+    }
+
+    .team-card.finished {
+      border-color: #22c55e;
+    }
+
+    .team-card.dead {
+      border-color: #ef4444;
+    }
+
+    .rank {
+      position: absolute;
+
+      top: 10px;
+      right: 12px;
+
+      background: #1e293b;
+
+      border-radius: 10px;
+
+      padding: 5px 9px;
+
+      font-size: 12px;
+
+      font-weight: 1000;
+    }
+
+    .team-card-name {
+      font-size: 20px;
+      font-weight: 1000;
+
+      padding-right: 45px;
+
+      margin-bottom: 12px;
+    }
+
+    .team-status {
+      display: inline-block;
+
+      padding: 5px 9px;
+
+      border-radius: 999px;
+
+      font-size: 11px;
+
+      font-weight: 900;
+
+      margin-bottom: 12px;
+    }
+
+    .status-waiting {
+      background: #422006;
+      color: #facc15;
+    }
+
+    .status-playing {
+      background: #172554;
+      color: #60a5fa;
+    }
+
+    .status-finished {
+      background: #052e16;
+      color: #4ade80;
+    }
+
+    .status-dead {
+      background: #450a0a;
+      color: #f87171;
+    }
+
+    .team-info {
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 8px;
+    }
+
+    .info-box {
+      background: #020617;
+
+      border-radius: 12px;
+
+      padding: 10px;
+
+      text-align: center;
+    }
+
+    .info-number {
+      font-size: 20px;
+      font-weight: 1000;
+    }
+
+    .info-label {
+      color: #64748b;
+      font-size: 10px;
+      margin-top: 3px;
+    }
+
+
+    /* =========================
+       EMPTY
+    ========================= */
+
+    .empty {
+      text-align: center;
+
+      padding: 50px 20px;
+
+      background: #0f172a;
+
+      border: 1px dashed #334155;
+
+      border-radius: 20px;
+
+      color: #94a3b8;
+    }
+
+
+    /* =========================
+       RANKING
+    ========================= */
+
+    .ranking {
+      margin-top: 25px;
+
+      background: #0f172a;
+
+      border: 1px solid #334155;
+
+      border-radius: 20px;
+
+      overflow: hidden;
+    }
+
+    .ranking-title {
+      padding: 16px;
+
+      font-size: 20px;
+
+      font-weight: 1000;
+
+      border-bottom: 1px solid #334155;
+    }
+
+    .ranking-row {
+      display: grid;
+
+      grid-template-columns:
+        60px 1fr 100px 100px;
+
+      gap: 10px;
+
+      padding: 13px 16px;
+
+      border-bottom: 1px solid #1e293b;
+
+      align-items: center;
+    }
+
+    .ranking-row:last-child {
+      border-bottom: 0;
+    }
+
+    .ranking-position {
+      font-weight: 1000;
+      font-size: 18px;
+    }
+
+    .ranking-team {
+      font-weight: 900;
+    }
+
+    .ranking-score {
+      text-align: right;
+      font-weight: 1000;
+      color: #facc15;
+    }
+
+    .ranking-hearts {
+      text-align: right;
+    }
+
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media (max-width: 700px) {
+
+      .header-inner {
+        align-items: flex-start;
+      }
+
+      .brand-title {
+        font-size: 20px;
+      }
+
+      .brand-icon {
+        font-size: 38px;
+      }
+
+      .summary {
+        grid-template-columns:
+          1fr 1fr;
+      }
+
+      .room-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .room-code {
+        width: 100%;
+      }
+
+      .button {
+        width: 100%;
+      }
+
+      .ranking-row {
+        grid-template-columns:
+          45px 1fr 75px 75px;
+
+        font-size: 13px;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+  <!-- =========================
+       HEADER
+  ========================== -->
+
+  <header>
+
+    <div class="header-inner">
+
+      <div class="brand">
+
+        <div class="brand-icon">
+          🚑
+        </div>
+
+        <div>
+
+          <div class="brand-title">
+            CUỘC ĐUA CỨU HỘ
+          </div>
+
+          <div class="brand-subtitle">
+            Bảng điều khiển giáo viên
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!-- =========================
+       MAIN
+  ========================== -->
+
+  <main>
+
+
+    <!-- ROOM -->
+
+    <section class="control-card">
+
+      <div class="control-title">
+        🎮 Phòng chơi
+      </div>
+
+      <div class="room-row">
+
+        <div
+          id="roomCode"
+          class="room-code"
+        >
+          ------
+        </div>
+
+        <button
+          id="createRoomButton"
+          class="button button-blue"
+          type="button"
+        >
+          ➕ TẠO PHÒNG
+        </button>
+
+        <button
+          id="startRoomButton"
+          class="button button-green hidden"
+          type="button"
+        >
+          ▶️ BẮT ĐẦU
+        </button>
+
+        <button
+          id="finishRoomButton"
+          class="button button-red hidden"
+          type="button"
+        >
+          ⏹️ KẾT THÚC
+        </button>
+
+        <button
+          id="resetRoomButton"
+          class="button button-gray hidden"
+          type="button"
+        >
+          🔄 RESET
+        </button>
+
+      </div>
+
+
+      <div
+        id="roomStatus"
+        class="room-status"
+      >
+        Chưa tạo phòng.
+      </div>
+
+    </section>
+
+
+    <!-- SUMMARY -->
+
+    <section class="summary">
+
+      <div class="summary-card">
+
+        <div
+          id="totalTeams"
+          class="summary-number"
+        >
+          0
+        </div>
+
+        <div class="summary-label">
+          Số đội
+        </div>
+
+      </div>
+
+
+      <div class="summary-card">
+
+        <div
+          id="playingTeams"
+          class="summary-number"
+        >
+          0
+        </div>
+
+        <div class="summary-label">
+          Đang chơi
+        </div>
+
+      </div>
+
+
+      <div class="summary-card">
+
+        <div
+          id="finishedTeams"
+          class="summary-number"
+        >
+          0
+        </div>
+
+        <div class="summary-label">
+          Hoàn thành
+        </div>
+
+      </div>
+
+
+      <div class="summary-card">
+
+        <div
+          id="highestScore"
+          class="summary-number"
+        >
+          0
+        </div>
+
+        <div class="summary-label">
+          Điểm cao nhất
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- TEAMS -->
+
+    <div class="section-title">
+      👥 Các đội đang tham gia
+    </div>
+
+    <div
+      id="teamsGrid"
+    >
+
+      <div class="empty">
+        Hãy tạo phòng để bắt đầu.
+      </div>
+
+    </div>
+
+
+    <!-- RANKING -->
+
+    <section
+      id="rankingSection"
+      class="ranking hidden"
+    >
+
+      <div class="ranking-title">
+        🏆 XẾP HẠNG
+      </div>
+
+      <div id="rankingList">
+      </div>
+
+    </section>
+
+
+  </main>
+
+
+  <!-- =========================
+       FIREBASE
+  ========================== -->
+
+  <script type="module">
+
+    import {
+      initializeApp
+    } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+
+    import {
+      getAuth,
+      signInAnonymously,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      updateDoc,
+      deleteDoc,
+      collection,
+      onSnapshot,
+      getDocs,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+
+    /* =====================================================
+       FIREBASE CONFIG
+    ====================================================== */
+
+    const firebaseConfig = {
+
+      apiKey:
+        "AIzaSyBdw2TkgRIm3hT4sfjSWnQEMLM7kDb8TDo",
+
+      authDomain:
+        "thunghiem-28f4f.firebaseapp.com",
+
+      projectId:
+        "thunghiem-28f4f",
+
+      storageBucket:
+        "thunghiem-28f4f.firebasestorage.app",
+
+      messagingSenderId:
+        "119403207767",
+
+      appId:
+        "1:119403207767:web:f970f4625368e60d41d712",
+
+      measurementId:
+        "G-NM5KPVVC4G"
+
+    };
+
+
+    const app =
+      initializeApp(firebaseConfig);
+
+    const auth =
+      getAuth(app);
+
+    const db =
+      getFirestore(app);
+
+
+    /* =====================================================
+       DOM
+    ====================================================== */
+
+    const roomCodeElement =
+      document.getElementById(
+        "roomCode"
+      );
+
+    const roomStatusElement =
+      document.getElementById(
+        "roomStatus"
+      );
+
+    const createRoomButton =
+      document.getElementById(
+        "createRoomButton"
+      );
+
+    const startRoomButton =
+      document.getElementById(
+        "startRoomButton"
+      );
+
+    const finishRoomButton =
+      document.getElementById(
+        "finishRoomButton"
+      );
+
+    const resetRoomButton =
+      document.getElementById(
+        "resetRoomButton"
+      );
+
+    const teamsGrid =
+      document.getElementById(
+        "teamsGrid"
+      );
+
+    const totalTeams =
+      document.getElementById(
+        "totalTeams"
+      );
+
+    const playingTeams =
+      document.getElementById(
+        "playingTeams"
+      );
+
+    const finishedTeams =
+      document.getElementById(
+        "finishedTeams"
+      );
+
+    const highestScore =
+      document.getElementById(
+        "highestScore"
+      );
+
+    const rankingSection =
+      document.getElementById(
+        "rankingSection"
+      );
+
+    const rankingList =
+      document.getElementById(
+        "rankingList"
+      );
+
+
+    /* =====================================================
+       STATE
+    ====================================================== */
+
+    let currentUser = null;
+
+    let currentRoomCode = null;
+
+    let roomUnsubscribe = null;
+
+    let teamsUnsubscribe = null;
+
+    let teams = [];
+
+
+    /* =====================================================
+       AUTH
+    ====================================================== */
+
+    signInAnonymously(auth)
+      .catch(error => {
+
+        console.error(
+          "Firebase Auth error:",
+          error
+        );
+
+        roomStatusElement.textContent =
+          "🔴 Không thể kết nối Firebase.";
+
+      });
+
+
+    onAuthStateChanged(
+      auth,
+      user => {
+
+        if (user) {
+
+          currentUser = user;
+
+          roomStatusElement.textContent =
+            "🟢 Đã kết nối Firebase. Hãy tạo phòng.";
+
+        }
+
+      }
+    );
+
+
+    /* =====================================================
+       CREATE ROOM
+    ====================================================== */
+
+    createRoomButton.addEventListener(
+      "click",
+      createRoom
+    );
+
+
+    async function createRoom() {
+
+      if (!currentUser) {
+
+        alert(
+          "Firebase chưa kết nối. Hãy chờ vài giây."
+        );
+
+        return;
+      }
+
+
+      createRoomButton.disabled =
+        true;
+
+      createRoomButton.textContent =
+        "⏳ ĐANG TẠO...";
+
+
+      try {
+
+        /*
+          Tạo mã 6 ký tự.
+        */
+
+        let code = "";
+
+        let exists = true;
+
+
+        while (exists) {
+
+          code =
+            generateRoomCode();
+
+          const testRef =
+            doc(
+              db,
+              "rooms",
+              code
+            );
+
+          /*
+            Dùng listener không cần thiết ở đây;
+            setDoc sẽ tạo phòng.
+          */
+
+          exists = false;
+
+        }
+
+
+        currentRoomCode =
+          code;
+
+
+        const roomRef =
+          doc(
+            db,
+            "rooms",
+            currentRoomCode
+          );
+
+
+        await setDoc(
+          roomRef,
+          {
+
+            code:
+              currentRoomCode,
+
+            status:
+              "waiting",
+
+            createdBy:
+              currentUser.uid,
+
+            createdAt:
+              serverTimestamp(),
+
+            startedAt:
+              null,
+
+            finishedAt:
+              null
+
+          }
+        );
+
+
+        roomCodeElement.textContent =
+          currentRoomCode;
+
+
+        showRoomStatus(
+          "waiting",
+          "🟡 Đang chờ các đội vào phòng..."
+        );
+
+
+        createRoomButton.classList.add(
+          "hidden"
+        );
+
+        startRoomButton.classList.remove(
+          "hidden"
+        );
+
+        resetRoomButton.classList.remove(
+          "hidden"
+        );
+
+
+        setupRoomListener();
+
+        setupTeamsListener();
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        alert(
+          "Không thể tạo phòng: " +
+          error.message
+        );
+
+      }
+
+
+      createRoomButton.disabled =
+        false;
+
+      createRoomButton.textContent =
+        "➕ TẠO PHÒNG";
+
+    }
+
+
+    function generateRoomCode() {
+
+      const chars =
+        "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+      let code = "";
+
+      for (
+        let i = 0;
+        i < 6;
+        i++
+      ) {
+
+        code +=
+          chars[
+            Math.floor(
+              Math.random() *
+              chars.length
+            )
+          ];
+
+      }
+
+      return code;
+
+    }
+
+
+    /* =====================================================
+       ROOM LISTENER
+    ====================================================== */
+
+    function setupRoomListener() {
+
+      if (roomUnsubscribe) {
+        roomUnsubscribe();
+      }
+
+
+      const roomRef =
+        doc(
+          db,
+          "rooms",
+          currentRoomCode
+        );
+
+
+      roomUnsubscribe =
+        onSnapshot(
+          roomRef,
+          snapshot => {
+
+            if (!snapshot.exists()) {
+              return;
+            }
+
+
+            const data =
+              snapshot.data();
+
+
+            updateRoomUI(
+              data.status
+            );
+
+          }
+        );
+
+    }
+
+
+    function updateRoomUI(
+      status
+    ) {
+
+      if (
+        status === "waiting"
+      ) {
+
+        showRoomStatus(
+          "waiting",
+          "🟡 Đang chờ các đội vào phòng..."
+        );
+
+        startRoomButton.classList.remove(
+          "hidden"
+        );
+
+        finishRoomButton.classList.add(
+          "hidden"
+        );
+
+      }
+
+
+      if (
+        status === "playing"
+      ) {
+
+        showRoomStatus(
+          "playing",
+          "🟢 ĐANG CHƠI — giáo viên đang theo dõi realtime"
+        );
+
+        startRoomButton.classList.add(
+          "hidden"
+        );
+
+        finishRoomButton.classList.remove(
+          "hidden"
+        );
+
+      }
+
+
+      if (
+        status === "finished"
+      ) {
+
+        showRoomStatus(
+          "finished",
+          "🔴 PHÒNG ĐÃ KẾT THÚC"
+        );
+
+        startRoomButton.classList.add(
+          "hidden"
+        );
+
+        finishRoomButton.classList.add(
+          "hidden"
+        );
+
+        rankingSection.classList.remove(
+          "hidden"
+        );
+
+        renderRanking();
+
+      }
+
+    }
+
+
+    function showRoomStatus(
+      type,
+      text
+    ) {
+
+      roomStatusElement.className =
+        "room-status " +
+        type;
+
+      roomStatusElement.textContent =
+        text;
+
+    }
+
+
+    /* =====================================================
+       START ROOM
+    ====================================================== */
+
+    startRoomButton.addEventListener(
+      "click",
+      startRoom
+    );
+
+
+    async function startRoom() {
+
+      if (!currentRoomCode) {
+        return;
+      }
+
+
+      const roomRef =
+        doc(
+          db,
+          "rooms",
+          currentRoomCode
+        );
+
+
+      try {
+
+        await updateDoc(
+          roomRef,
+          {
+
+            status:
+              "playing",
+
+            startedAt:
+              serverTimestamp()
+
+          }
+        );
+
+
+        /*
+          Những đội đã vào phòng sẽ chuyển sang playing.
+        */
+
+        const teamsRef =
+          collection(
+            db,
+            "rooms",
+            currentRoomCode,
+            "teams"
+          );
+
+
+        const snapshot =
+          await getDocs(
+            teamsRef
+          );
+
+
+        const updates =
+          [];
+
+
+        snapshot.forEach(
+          teamDoc => {
+
+            updates.push(
+              updateDoc(
+                teamDoc.ref,
+                {
+                  status:
+                    "playing",
+
+                  lastUpdated:
+                    serverTimestamp()
+                }
+              )
+            );
+
+          }
+        );
+
+
+        await Promise.all(
+          updates
+        );
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        alert(
+          "Không thể bắt đầu phòng: " +
+          error.message
+        );
+
+      }
+
+    }
+
+
+    /* =====================================================
+       FINISH ROOM
+    ====================================================== */
+
+    finishRoomButton.addEventListener(
+      "click",
+      finishRoom
+    );
+
+
+    async function finishRoom() {
+
+      if (!currentRoomCode) {
+        return;
+      }
+
+
+      const ok =
+        confirm(
+          "Bạn có chắc muốn kết thúc phòng?"
+        );
+
+
+      if (!ok) {
+        return;
+      }
+
+
+      try {
+
+        const roomRef =
+          doc(
+            db,
+            "rooms",
+            currentRoomCode
+          );
+
+
+        await updateDoc(
+          roomRef,
+          {
+
+            status:
+              "finished",
+
+            finishedAt:
+              serverTimestamp()
+
+          }
+        );
+
+
+        const teamsRef =
+          collection(
+            db,
+            "rooms",
+            currentRoomCode,
+            "teams"
+          );
+
+
+        const snapshot =
+          await getDocs(
+            teamsRef
+          );
+
+
+        const updates =
+          [];
+
+
+        snapshot.forEach(
+          teamDoc => {
+
+            updates.push(
+              updateDoc(
+                teamDoc.ref,
+                {
+
+                  status:
+                    "finished",
+
+                  lastUpdated:
+                    serverTimestamp()
+
+                }
+              )
+            );
+
+          }
+        );
+
+
+        await Promise.all(
+          updates
+        );
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        alert(
+          "Không thể kết thúc phòng: " +
+          error.message
+        );
+
+      }
+
+    }
+
+
+    /* =====================================================
+       RESET ROOM
+    ====================================================== */
+
+    resetRoomButton.addEventListener(
+      "click",
+      resetRoom
+    );
+
+
+    async function resetRoom() {
+
+      if (!currentRoomCode) {
+        return;
+      }
+
+
+      const ok =
+        confirm(
+          "RESET sẽ xóa toàn bộ các đội trong phòng. Tiếp tục?"
+        );
+
+
+      if (!ok) {
+        return;
+      }
+
+
+      try {
+
+        const teamsRef =
+          collection(
+            db,
+            "rooms",
+            currentRoomCode,
+            "teams"
+          );
+
+
+        const snapshot =
+          await getDocs(
+            teamsRef
+          );
+
+
+        const deletes =
+          [];
+
+
+        snapshot.forEach(
+          teamDoc => {
+
+            deletes.push(
+              deleteDoc(
+                teamDoc.ref
+              )
+            );
+
+          }
+        );
+
+
+        await Promise.all(
+          deletes
+        );
+
+
+        const roomRef =
+          doc(
+            db,
+            "rooms",
+            currentRoomCode
+          );
+
+
+        await deleteDoc(
+          roomRef
+        );
+
+
+        if (roomUnsubscribe) {
+          roomUnsubscribe();
+          roomUnsubscribe = null;
+        }
+
+
+        if (teamsUnsubscribe) {
+          teamsUnsubscribe();
+          teamsUnsubscribe = null;
+        }
+
+
+        currentRoomCode =
+          null;
+
+        teams = [];
+
+
+        roomCodeElement.textContent =
+          "------";
+
+
+        showRoomStatus(
+          "",
+          "Chưa tạo phòng."
+        );
+
+
+        startRoomButton.classList.add(
+          "hidden"
+        );
+
+        finishRoomButton.classList.add(
+          "hidden"
+        );
+
+        resetRoomButton.classList.add(
+          "hidden"
+        );
+
+        createRoomButton.classList.remove(
+          "hidden"
+        );
+
+
+        teamsGrid.innerHTML =
+          `
+            <div class="empty">
+              Hãy tạo phòng để bắt đầu.
+            </div>
+          `;
+
+
+        rankingSection.classList.add(
+          "hidden"
+        );
+
+
+        updateSummary();
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        alert(
+          "Không thể reset phòng: " +
+          error.message
+        );
+
+      }
+
+    }
+
+
+    /* =====================================================
+       TEAMS LISTENER
+    ====================================================== */
+
+    function setupTeamsListener() {
+
+      if (teamsUnsubscribe) {
+        teamsUnsubscribe();
+      }
+
+
+      const teamsRef =
+        collection(
+          db,
+          "rooms",
+          currentRoomCode,
+          "teams"
+        );
+
+
+      teamsUnsubscribe =
+        onSnapshot(
+          teamsRef,
+          snapshot => {
+
+            teams =
+              snapshot.docs.map(
+                doc => ({
+                  id:
+                    doc.id,
+
+                  ...doc.data()
+                })
+              );
+
+
+            teams.sort(
+              (a, b) => {
+
+                const scoreA =
+                  Number(a.score || 0);
+
+                const scoreB =
+                  Number(b.score || 0);
+
+                if (
+                  scoreA !== scoreB
+                ) {
+
+                  return scoreB -
+                    scoreA;
+
+                }
+
+
+                return (
+                  Number(b.stage || 0) -
+                  Number(a.stage || 0)
+                );
+
+              }
+            );
+
+
+            renderTeams();
+
+            updateSummary();
+
+            renderRanking();
+
+          },
+          error => {
+
+            console.error(
+              "Teams listener:",
+              error
+            );
+
+          }
+        );
+
+    }
+
+
+    /* =====================================================
+       RENDER TEAMS
+    ====================================================== */
+
+    function renderTeams() {
+
+      if (!teams.length) {
+
+        teamsGrid.innerHTML =
+          `
+            <div class="empty">
+              Chưa có đội nào vào phòng.<br>
+              Hãy cho học sinh quét QR hoặc nhập mã phòng.
+            </div>
+          `;
+
+        return;
+      }
+
+
+      teamsGrid.innerHTML = "";
+
+
+      teams.forEach(
+        (team, index) => {
+
+          const card =
+            document.createElement(
+              "div"
+            );
+
+
+          const hearts =
+            Number(
+              team.hearts ?? 3
+            );
+
+
+          const score =
+            Number(
+              team.score || 0
+            );
+
+
+          const stage =
+            Number(
+              team.stage || 0
+            );
+
+
+          const status =
+            team.status ||
+            "waiting";
+
+
+          let cardClass =
+            "team-card";
+
+
+          if (
+            status === "playing"
+          ) {
+
+            cardClass +=
+              " playing";
+
+          }
+
+
+          if (
+            status === "finished" &&
+            hearts > 0
+          ) {
+
+            cardClass +=
+              " finished";
+
+          }
+
+
+          if (
+            hearts <= 0
+          ) {
+
+            cardClass +=
+              " dead";
+
+          }
+
+
+          card.className =
+            cardClass;
+
+
+          const rank =
+            index + 1;
+
+
+          let statusText =
+            "⏳ Đang chờ";
+
+          let statusClass =
+            "status-waiting";
+
+
+          if (
+            status === "playing"
+          ) {
+
+            statusText =
+              "🟢 Đang chơi";
+
+            statusClass =
+              "status-playing";
+
+          }
+
+
+          if (
+            status === "finished" &&
+            hearts > 0
+          ) {
+
+            statusText =
+              "🏆 Hoàn thành";
+
+            statusClass =
+              "status-finished";
+
+          }
+
+
+          if (
+            hearts <= 0
+          ) {
+
+            statusText =
+              "💔 Hết tim";
+
+            statusClass =
+              "status-dead";
+
+          }
+
+
+          card.innerHTML =
+            `
+
+              <div class="rank">
+                #${rank}
+              </div>
+
+              <div class="team-card-name">
+                ${escapeHtml(
+                  team.teamName ||
+                  "Đội chưa đặt tên"
+                )}
+              </div>
+
+              <div
+                class="
+                  team-status
+                  ${statusClass}
+                "
+              >
+                ${statusText}
+              </div>
+
+              <div class="team-info">
+
+                <div class="info-box">
+
+                  <div class="info-number">
+                    ${Math.min(
+                      stage + 1,
+                      10
+                    )}/10
+                  </div>
+
+                  <div class="info-label">
+                    CHẶNG
+                  </div>
+
+                </div>
+
+
+                <div class="info-box">
+
+                  <div class="info-number">
+                    ⭐ ${score}
+                  </div>
+
+                  <div class="info-label">
+                    ĐIỂM
+                  </div>
+
+                </div>
+
+
+                <div class="info-box">
+
+                  <div class="info-number">
+                    ${
+                      "❤️".repeat(
+                        Math.max(
+                          0,
+                          hearts
+                        )
+                      )
+                    }
+                  </div>
+
+                  <div class="info-label">
+                    TIM
+                  </div>
+
+                </div>
+
+              </div>
+
+            `;
+
+
+          teamsGrid.appendChild(
+            card
+          );
+
+        }
+      );
+
+    }
+
+
+    /* =====================================================
+       SUMMARY
+    ====================================================== */
+
+    function updateSummary() {
+
+      totalTeams.textContent =
+        teams.length;
+
+
+      playingTeams.textContent =
+        teams.filter(
+          team =>
+            team.status ===
+            "playing" &&
+            Number(
+              team.hearts ?? 3
+            ) > 0
+        ).length;
+
+
+      finishedTeams.textContent =
+        teams.filter(
+          team =>
+            team.status ===
+            "finished"
+        ).length;
+
+
+      const highest =
+        teams.length
+          ? Math.max(
+              ...teams.map(
+                team =>
+                  Number(
+                    team.score || 0
+                  )
+              )
+            )
+          : 0;
+
+
+      highestScore.textContent =
+        highest;
+
+    }
+
+
+    /* =====================================================
+       RANKING
+    ====================================================== */
+
+    function renderRanking() {
+
+      if (!teams.length) {
+
+        rankingSection.classList.add(
+          "hidden"
+        );
+
+        return;
+      }
+
+
+      rankingSection.classList.remove(
+        "hidden"
+      );
+
+
+      const sorted =
+        [...teams].sort(
+          (a, b) => {
+
+            const scoreA =
+              Number(
+                a.score || 0
+              );
+
+            const scoreB =
+              Number(
+                b.score || 0
+              );
+
+
+            if (
+              scoreA !== scoreB
+            ) {
+
+              return scoreB -
+                scoreA;
+
+            }
+
+
+            const stageA =
+              Number(
+                a.stage || 0
+              );
+
+            const stageB =
+              Number(
+                b.stage || 0
+              );
+
+
+            return stageB -
+              stageA;
+
+          }
+        );
+
+
+      rankingList.innerHTML =
+        "";
+
+
+      sorted.forEach(
+        (team, index) => {
+
+          const row =
+            document.createElement(
+              "div"
+            );
+
+
+          row.className =
+            "ranking-row";
+
+
+          const hearts =
+            Number(
+              team.hearts ?? 3
+            );
+
+
+          row.innerHTML =
+            `
+
+              <div
+                class="ranking-position"
+              >
+                ${
+                  index === 0
+                    ? "🥇"
+                    : index === 1
+                      ? "🥈"
+                      : index === 2
+                        ? "🥉"
+                        : "#" +
+                          (index + 1)
+                }
+              </div>
+
+              <div
+                class="ranking-team"
+              >
+                ${escapeHtml(
+                  team.teamName ||
+                  "Đội"
+                )}
+              </div>
+
+              <div
+                class="ranking-score"
+              >
+                ⭐ ${
+                  Number(
+                    team.score || 0
+                  )
+                }
+              </div>
+
+              <div
+                class="ranking-hearts"
+              >
+                ${
+                  "❤️".repeat(
+                    Math.max(
+                      0,
+                      hearts
+                    )
+                  )
+                }
+              </div>
+
+            `;
+
+
+          rankingList.appendChild(
+            row
+          );
+
+        }
+      );
+
+    }
+
+
+    /* =====================================================
+       HTML ESCAPE
+    ====================================================== */
+
+    function escapeHtml(
+      value
+    ) {
+
+      return String(value)
+        .replace(
+          /&/g,
+          "&amp;"
+        )
+        .replace(
+          /</g,
+          "&lt;"
+        )
+        .replace(
+          />/g,
+          "&gt;"
+        )
+        .replace(
+          /"/g,
+          "&quot;"
+        )
+        .replace(
+          /'/g,
+          "&#039;"
+        );
+
+    }
+
+  </script>
+
+</body>
+</html>
