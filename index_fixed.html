@@ -1,0 +1,1229 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🚑 Cuộc Đua Cứu Hộ</title>
+<style>
+:root {
+  --bg:#101827; --panel:#182438; --panel2:#263954;
+  --text:#f4f7fb; --green:#26c281; --red:#ff5964;
+  --gold:#ffd166; --blue:#3c8cff;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0; padding:12px; background:var(--bg); color:var(--text);
+  font-family:"Times New Roman",serif;
+}
+#app { max-width:560px; width:100%; margin:auto; }
+.hidden { display:none!important; }
+.start-card,.question-card,.choice-card,.feedback-card,.end-card {
+  background:var(--panel); border:1px solid #34445c;
+  border-radius:18px; padding:17px; margin-bottom:12px;
+  box-shadow:0 10px 25px #0003;
+}
+.start-card,.end-card { text-align:center; margin-top:5vh; }
+.logo { font-size:55px; margin:8px; }
+h1 { font-size:clamp(27px,7vw,38px); margin:8px 0; }
+h2 { font-size:23px; margin:5px 0 12px; }
+p { line-height:1.4; }
+.sub,.small-note { color:#b6c4d9; }
+.input {
+  width:100%; padding:14px; margin:12px 0; border-radius:12px;
+  border:2px solid #435775; background:#0e1726; color:white;
+  font:20px "Times New Roman",serif;
+}
+button { font-family:"Times New Roman",serif; cursor:pointer; }
+.primary,.secondary,.answer-btn,.lucky-card,.next-btn {
+  border:0; border-radius:12px; font-weight:bold;
+}
+.primary {
+  width:100%; padding:15px; background:var(--green);
+  color:#08251b; font-size:21px;
+}
+.secondary { padding:10px 14px; background:#31425b; color:white; font-size:17px; }
+.game-header {
+  position:sticky; top:0; z-index:5; background:var(--bg);
+  padding:6px 0 10px;
+}
+.toprow { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.team-label { font-size:19px; font-weight:bold; overflow-wrap:anywhere; }
+.statline {
+  display:flex; flex-wrap:wrap; gap:10px; justify-content:space-between;
+  background:var(--panel); padding:10px; border-radius:12px; margin-top:8px;
+  font-size:17px;
+}
+.stage-label { color:#cfe1ff; font-weight:bold; }
+.timer-wrap { height:11px; overflow:hidden; border-radius:10px; background:#293950; margin-top:10px; }
+.timer-bar { height:100%; width:100%; background:var(--green); transition:width 1s linear; }
+.timer-text { text-align:center; font-size:18px; margin:4px; }
+.map {
+  height:245px; position:relative; overflow:hidden; border-radius:18px;
+  border:2px solid #455773; margin-bottom:12px;
+  background:linear-gradient(150deg,#304b52,#213b42 55%,#4b5140);
+}
+.map img { width:100%; height:100%; object-fit:cover; display:block; }
+.effect-overlay { position:absolute; inset:0; pointer-events:none; }
+.ambulance {
+  position:absolute; left:14%; bottom:17%; font-size:54px;
+  filter:drop-shadow(0 4px 3px #0008);
+  transition:left .6s ease,transform .6s ease;
+}
+.ambulance.move-forward { left:67%; transform:translateY(-8px); }
+.ambulance.shake { animation:shake .4s infinite; }
+@keyframes shake {
+  0%,100% { transform:translateX(0); }
+  25% { transform:translateX(-4px); }
+  75% { transform:translateX(4px); }
+}
+.effect-dark { background:#000b; }
+.effect-warning { background:#ffb70322; border:5px solid #ffb70366; }
+.effect-traffic { background:repeating-linear-gradient(135deg,#ffcc0040 0 10px,#1113 10px 20px); }
+.effect-rain { background:repeating-linear-gradient(115deg,#8ccaff50 0 2px,transparent 2px 12px); }
+.effect-smoke { background:#7d899688; }
+.effect-flood { background:#168bdb55; }
+.question-number { color:var(--gold); font-weight:bold; margin-bottom:8px; }
+.question-text { font-size:20px; font-weight:bold; line-height:1.4; margin-bottom:14px; }
+.answers { display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+.answer-btn {
+  background:var(--panel2); color:white; border:2px solid #3a4f6c;
+  text-align:left; font-size:17px; line-height:1.3; padding:12px 9px;
+  min-height:58px;
+}
+.answer-btn:disabled { cursor:default; }
+.answer-btn.correct { background:#176d4a; border-color:#39d99a; }
+.answer-btn.wrong { background:#7d2c38; border-color:var(--red); }
+.lucky-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+.lucky-card {
+  min-height:100px; padding:8px 4px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:7px; background:linear-gradient(145deg,#3c8cff,#2750a0);
+  color:white; border:2px solid #9ec7ff; box-shadow:0 4px 0 #172d5b;
+  font-size:15px; overflow-wrap:anywhere;
+}
+.lucky-card .mark { font-size:32px; }
+.lucky-card.revealed { background:#1f6a55; border-color:#83e7c2; box-shadow:none; }
+.lucky-card:disabled { cursor:default; }
+.feedback-card { text-align:center; }
+.feedback-icon { font-size:46px; }
+.feedback-title { font-size:23px; font-weight:bold; margin:8px 0; }
+.feedback-text { font-size:18px; line-height:1.4; }
+.next-btn { width:100%; margin-top:14px; padding:14px; background:var(--gold); color:#382800; font-size:20px; }
+.final-score { color:var(--gold); font-size:44px; font-weight:bold; }
+.rank { color:var(--gold); font-size:34px; font-weight:bold; }
+@media(max-width:380px) {
+  body { padding:8px; }
+  .map { height:215px; }
+  .answer-btn { font-size:15px; padding:10px 7px; }
+  .lucky-card { min-height:85px; font-size:13px; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+<section id="startScreen">
+  <div class="start-card">
+    <div class="logo">🚑</div>
+    <h1>Cuộc Đua Cứu Hộ</h1>
+    <p class="sub">Trả lời câu hỏi tiếng Hàn · Lật thẻ may mắn · Cứu hộ đến phút cuối!</p>
+    <label for="roomCodeInput">Mã phòng của giáo viên</label>
+<input
+  id="roomCodeInput"
+  class="input"
+  maxlength="6"
+  placeholder="Nhập mã phòng gồm 6 ký tự..."
+  autocomplete="off"
+  autocapitalize="characters"
+  spellcheck="false"
+>
+
+<label for="teamInput">Tên đội của bạn</label>
+    <input id="teamInput" class="input" maxlength="24" placeholder="Nhập tên đội..." autocomplete="off">
+    <button id="startBtn" class="primary">BẮT ĐẦU NHIỆM VỤ 🚨</button>
+    <button id="soundStartBtn" class="secondary" style="margin-top:10px">🔇 Bật nhạc</button>
+    <p id="startError" style="color:#ff9ba2"></p>
+    <p class="small-note">Mỗi câu có 20 giây. Hãy giữ tim và chọn thẻ thật khôn ngoan!</p>
+  </div>
+</section>
+
+<section id="gameScreen" class="hidden">
+  <header class="game-header">
+    <div class="toprow">
+      <div id="teamNameDisplay" class="team-label">🚑 Đội</div>
+      <button id="soundBtn" class="secondary">🔇</button>
+    </div>
+    <div class="statline">
+      <span id="stageDisplay" class="stage-label">CÂU 1/10</span>
+      <span id="heartsDisplay">❤️</span>
+      <span id="shieldDisplay">🛡️ 0</span>
+      <span id="scoreDisplay">⭐ 0</span>
+    </div>
+    <div class="timer-wrap"><div id="timerBar" class="timer-bar"></div></div>
+    <div class="timer-text">⏱️ Còn <span id="timerValue">20</span> giây</div>
+  </header>
+
+  <div class="map">
+    <img id="mainScene" src="images/main-scene.png" alt="Bản đồ nhiệm vụ cứu hộ">
+    <div id="effectOverlay" class="effect-overlay"></div>
+    <div id="ambulance" class="ambulance">🚑</div>
+  </div>
+
+  <div id="questionCard" class="question-card">
+    <div id="questionNumber" class="question-number">CÂU 1/10</div>
+    <div id="questionText" class="question-text"></div>
+    <div id="mainAnswers" class="answers"></div>
+  </div>
+
+  <div id="luckyPanel" class="choice-card hidden">
+    <h2>🍀 Chọn một thẻ may mắn!</h2>
+    <p class="sub">Các thẻ đang úp xuống. Chọn một thẻ để khám phá vận may.</p>
+    <div id="luckyGrid" class="lucky-grid"></div>
+    <p id="extraFlipNote" class="small-note"></p>
+  </div>
+
+  <div id="feedback" class="feedback-card hidden" aria-live="polite">
+    <div id="feedbackIcon" class="feedback-icon">🎉</div>
+    <div id="feedbackTitle" class="feedback-title"></div>
+    <div id="feedbackText" class="feedback-text"></div>
+    <button id="nextBtn" class="next-btn">CÂU TIẾP THEO →</button>
+  </div>
+</section>
+
+<section id="endScreen" class="hidden">
+  <div class="end-card">
+    <div class="logo">🏥</div>
+    <h1 id="endTitle">Nhiệm vụ kết thúc</h1>
+    <p id="endTeam" class="sub"></p>
+    <div class="final-score"><span id="finalScore">0</span> điểm</div>
+    <div id="finalRank" class="rank">HẠNG C</div>
+    <div id="endInfo"></div>
+    <button id="restartBtn" class="primary" style="margin-top:18px">CHƠI LẠI 🔄</button>
+  </div>
+</section>
+</div>
+
+<audio id="bgMusic" loop preload="auto">
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import {
+  getAuth,
+  signInAnonymously
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  onSnapshot,
+  collection,
+  getDocs,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDS3ZSPvyIM34BF2aChbHYJ-izt-65rVUg",
+  authDomain: "ambulance-rescue-game-1611.firebaseapp.com",
+  projectId: "ambulance-rescue-game-1611",
+  storageBucket: "ambulance-rescue-game-1611.firebasestorage.app",
+  messagingSenderId: "645151324428",
+  appId: "1:645151324428:web:6fb3641655e504a1d57129",
+  measurementId: "G-T3TGVJF7EK"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let roomListener = null;
+let teamRef = null;
+let teamId = "";
+let currentRoomCode = "";
+let hasStarted = false;
+
+try {
+  await signInAnonymously(auth);
+  console.log("Firebase: đăng nhập thành công");
+} catch (error) {
+  console.error("Firebase Auth error:", error);
+  document.getElementById("startError").textContent =
+    "Không thể kết nối Firebase. Hãy tải lại trang và thử lại.";
+}
+
+window.joinRoom = async function () {
+  const code = document
+    .getElementById("roomCodeInput")
+    .value.trim()
+    .toUpperCase();
+
+  const teamName = document
+    .getElementById("teamInput")
+    .value.trim();
+
+  const errorEl = document.getElementById("startError");
+  const startBtn = document.getElementById("startBtn");
+
+  if (!code) {
+    errorEl.textContent = "Bạn hãy nhập mã phòng của giáo viên!";
+    return;
+  }
+
+  if (code.length !== 6) {
+    errorEl.textContent = "Mã phòng phải có 6 ký tự.";
+    return;
+  }
+
+  if (!teamName) {
+    errorEl.textContent = "Bạn hãy nhập tên đội trước nhé!";
+    return;
+  }
+
+  if (!auth.currentUser) {
+    errorEl.textContent =
+      "Firebase chưa đăng nhập. Hãy tải lại trang rồi thử lại.";
+    return;
+  }
+
+  startBtn.disabled = true;
+  errorEl.textContent = "Đang kiểm tra mã phòng...";
+
+  try {
+    const roomRef = doc(db, "rooms", code);
+    const roomSnap = await getDoc(roomRef);
+
+    if (!roomSnap.exists()) {
+      errorEl.textContent =
+        "Không tìm thấy phòng này. Hãy kiểm tra lại mã phòng!";
+      startBtn.disabled = false;
+      return;
+    }
+
+    const roomData = roomSnap.data();
+
+    if (roomData.status === "finished") {
+      errorEl.textContent = "Phòng này đã kết thúc.";
+      startBtn.disabled = false;
+      return;
+    }
+
+    if (teamRef) {
+      errorEl.textContent = "Đội này đã vào phòng rồi.";
+      startBtn.disabled = false;
+      return;
+    }
+
+    currentRoomCode = code;
+
+    // Tạo mã riêng cho đội trong phòng.
+    teamId = auth.currentUser.uid;
+    teamRef = doc(db, "rooms", code, "teams", teamId);
+
+    await setDoc(teamRef, {
+      teamName: teamName,
+      name: teamName,
+      score: 0,
+      hearts: 2,
+      stage: 0,
+      status: "waiting",
+      updatedAt: serverTimestamp()
+    });
+
+    // Theo dõi tài liệu đội của chính mình để nhận điểm thay đổi từ đội khác.
+    // Chỉ cập nhật giao diện/state tại đây; không ghi ngược lại Firestore để tránh vòng lặp.
+    onSnapshot(teamRef, (teamSnapshot) => {
+      if (!teamSnapshot.exists()) return;
+      const teamData = teamSnapshot.data();
+      if (typeof window.onRemoteTeamUpdate === "function") {
+        window.onRemoteTeamUpdate(teamData);
+      }
+    }, (error) => {
+      console.error("Lỗi theo dõi dữ liệu đội:", error);
+    });
+
+    errorEl.textContent =
+      "Đã vào phòng " + code + "! Đang chờ giáo viên bắt đầu...";
+
+    // Theo dõi trạng thái phòng theo thời gian thực.
+    roomListener = onSnapshot(roomRef, (snapshot) => {
+      if (!snapshot.exists()) {
+        errorEl.textContent = "Phòng đã bị đóng hoặc xóa.";
+        return;
+      }
+
+      const status = snapshot.data().status;
+
+      if (status === "playing" && !hasStarted) {
+        hasStarted = true;
+        errorEl.textContent = "";
+
+        // Bắt đầu trò chơi bằng hàm hiện có.
+        window.startGame();
+      }
+
+      if (status === "finished") {
+        errorEl.textContent = "Giáo viên đã kết thúc phòng.";
+      }
+    }, (error) => {
+      console.error("Lỗi theo dõi phòng:", error);
+      errorEl.textContent =
+        "Không thể theo dõi phòng. Hãy kiểm tra kết nối mạng.";
+    });
+
+  } catch (error) {
+    console.error("Lỗi vào phòng:", error);
+    errorEl.textContent =
+      "Không thể vào phòng. Hãy kiểm tra mã phòng và cấu hình Firebase.";
+    startBtn.disabled = false;
+  }
+};
+
+// Cho các bước sau cập nhật tiến trình đội lên Firestore.
+window.syncTeamState = async function (data) {
+  if (!teamRef) return;
+
+  try {
+    await import("https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js")
+      .then(({ updateDoc }) => updateDoc(teamRef, {
+        ...data,
+        updatedAt: serverTimestamp()
+      }));
+  } catch (error) {
+    console.error("Lỗi cập nhật tiến trình:", error);
+  }
+};
+// Lấy danh sách các đội khác trong cùng phòng
+window.getOpponentTeams = async function () {
+  console.log("Mã phòng hiện tại:", currentRoomCode);
+  console.log("ID đội hiện tại:", teamId);
+
+  if (!currentRoomCode || !teamId) {
+    console.error("Thiếu mã phòng hoặc ID đội!");
+    alert("Không xác định được đội hiện tại. Hãy thoát và vào phòng lại!");
+    return [];
+  }
+
+  try {
+    const teamsRef = collection(
+      db,
+      "rooms",
+      currentRoomCode,
+      "teams"
+    );
+
+    const snapshot = await getDocs(teamsRef);
+
+    console.log("Số đội tìm thấy trong phòng:", snapshot.size);
+    console.log(
+      "Danh sách ID đội:",
+      snapshot.docs.map(teamDoc => teamDoc.id)
+    );
+
+    const opponents = snapshot.docs
+      .filter(teamDoc => teamDoc.id !== teamId)
+      .map(teamDoc => ({
+        id: teamDoc.id,
+        ...teamDoc.data()
+      }));
+
+    console.log("Danh sách đối thủ:", opponents);
+
+    return opponents;
+  } catch (error) {
+    console.error("Lỗi lấy danh sách đội đối thủ:", error);
+    alert("Không đọc được danh sách đội. Mở Console (F12) để xem lỗi.");
+    return [];
+  }
+};
+// Thẻ Cướp điểm: lấy tối đa 10 điểm từ đội đối thủ
+window.useStealCard = async function () {
+  if (state.specialUsed.steal) {
+    alert("Đội bạn đã sử dụng thẻ Cướp điểm trong ván này!");
+    return false;
+  }
+
+  const opponents = await window.getOpponentTeams();
+
+  if (!opponents.length) {
+    alert("Chưa có đội đối thủ trong phòng!");
+    return false;
+  }
+
+  const choices = opponents.map((team, index) =>
+    `${index + 1}. ${team.teamName || team.name || "Đội chưa đặt tên"} — ${team.score || 0} điểm`
+  ).join("\n");
+
+  const answer = prompt(
+    "🥷 CHỌN ĐỘI ĐỂ CƯỚP ĐIỂM:\n\n" +
+    choices +
+    "\n\nNhập số thứ tự đội muốn chọn:"
+  );
+
+  if (answer === null) return false;
+
+  const selectedIndex = Number(answer) - 1;
+
+  if (
+    !Number.isInteger(selectedIndex) ||
+    selectedIndex < 0 ||
+    selectedIndex >= opponents.length
+  ) {
+    alert("Lựa chọn không hợp lệ!");
+    return false;
+  }
+
+  const target = opponents[selectedIndex];
+  const targetScore = Math.max(0, Number(target.score) || 0);
+  const stolen = Math.min(10, targetScore);
+
+  if (stolen <= 0) {
+    alert("Đội này không có điểm để cướp!");
+    return false;
+  }
+
+  const confirmed = confirm(
+    `Bạn sẽ cướp ${stolen} điểm từ đội ${target.teamName || target.name}. Tiếp tục?`
+  );
+
+  if (!confirmed) return false;
+
+  try {
+    const targetRef = doc(
+      db, "rooms", currentRoomCode, "teams", target.id
+    );
+
+    await updateDoc(targetRef, {
+      score: targetScore - stolen,
+      updatedAt: serverTimestamp()
+    });
+
+    state.score += stolen;
+    state.specialUsed.steal = true;
+
+    updateStats();
+
+    if (typeof window.syncTeamState === "function") {
+      await window.syncTeamState({ score: state.score });
+    }
+
+    alert(`🥷 Cướp thành công ${stolen} điểm!`);
+    return true;
+  } catch (error) {
+    console.error("Lỗi sử dụng thẻ Cướp điểm:", error);
+    alert("Không thể cướp điểm. Hãy thử lại!");
+    return false;
+  }
+}; 
+// Thẻ Đổi điểm: hoán đổi tổng điểm với một đội đối thủ
+window.useSwapCard = async function () {
+  if (state.specialUsed.swap) {
+    alert("Đội bạn đã sử dụng thẻ Đổi điểm trong ván này!");
+    return false;
+  }
+
+  const opponents = await window.getOpponentTeams();
+
+  if (!opponents.length) {
+    alert("Chưa có đội đối thủ trong phòng!");
+    return false;
+  }
+
+  const choices = opponents.map((team, index) =>
+    `${index + 1}. ${team.teamName || team.name || "Đội chưa đặt tên"} — ${Number(team.score) || 0} điểm`
+  ).join("\n");
+
+  const answer = prompt(
+    "🔄 CHỌN ĐỘI ĐỂ ĐỔI ĐIỂM:\n\n" +
+    choices +
+    "\n\nNhập số thứ tự đội muốn chọn:"
+  );
+
+  if (answer === null) return false;
+
+  const selectedIndex = Number(answer) - 1;
+
+  if (
+    !Number.isInteger(selectedIndex) ||
+    selectedIndex < 0 ||
+    selectedIndex >= opponents.length
+  ) {
+    alert("Lựa chọn không hợp lệ!");
+    return false;
+  }
+
+  const target = opponents[selectedIndex];
+  const myScore = Math.max(0, Number(state.score) || 0);
+  const targetScore = Math.max(0, Number(target.score) || 0);
+
+  const confirmed = confirm(
+    `Bạn có ${myScore} điểm.\n` +
+    `Đội ${target.teamName || target.name} có ${targetScore} điểm.\n\n` +
+    "Hai đội sẽ hoán đổi toàn bộ điểm. Bạn có chắc chắn?"
+  );
+
+  if (!confirmed) return false;
+
+  try {
+    const targetRef = doc(
+      db, "rooms", currentRoomCode, "teams", target.id
+    );
+
+    await updateDoc(targetRef, {
+      score: myScore,
+      updatedAt: serverTimestamp()
+    });
+
+    state.score = targetScore;
+    state.specialUsed.swap = true;
+
+    updateStats();
+
+    await window.syncTeamState({ score: state.score });
+
+    alert(
+      `🔄 Đã đổi điểm thành công!\n` +
+      `Đội bạn hiện có ${state.score} điểm.`
+    );
+
+    return true;
+  } catch (error) {
+    console.error("Lỗi sử dụng thẻ Đổi điểm:", error);
+    alert("Không thể đổi điểm. Hãy thử lại!");
+    return false;
+  }
+};
+// Kiểm tra đội có bị phá hoại hay không
+window.checkSabotageStatus = async function () {
+  if (!teamRef) return false;
+
+  try {
+    const snap = await getDoc(teamRef);
+
+    if (!snap.exists() || !snap.data().sabotagePending) {
+      return false;
+    }
+
+    await updateDoc(teamRef, {
+      sabotagePending: false,
+      updatedAt: serverTimestamp()
+    });
+
+    state.sabotagePending = false;
+    return true;
+
+  } catch (error) {
+    console.error("Không kiểm tra được trạng thái phá hoại:", error);
+    return false;
+  }
+};
+window.useSabotageCard = async function () {
+  if (state.specialUsed.sabotage) {
+    alert("Đội bạn đã sử dụng thẻ Phá hoại trong ván này!");
+    return false;
+  }
+
+  if (!currentRoomCode || !teamId) {
+    alert("Bạn chưa tham gia phòng!");
+    return false;
+  }
+
+  const opponents = await window.getOpponentTeams();
+
+  if (!opponents || opponents.length === 0) {
+    alert("Chưa có đội đối thủ trong phòng!");
+    return false;
+  }
+
+  const choices = opponents.map((team, index) => {
+    return `${index + 1}. ${team.teamName || team.name || "Đội chưa đặt tên"} - ${team.score || 0} điểm`;
+  });
+
+  const choice = prompt(
+    "Chọn đội muốn phá hoại:\n\n" +
+    choices.join("\n") +
+    "\n\nNhập số thứ tự của đội:"
+  );
+
+  if (choice === null) return false;
+
+  const index = Number(choice) - 1;
+
+  if (
+    !Number.isInteger(index) ||
+    index < 0 ||
+    index >= opponents.length
+  ) {
+    alert("Số thứ tự không hợp lệ!");
+    return false;
+  }
+
+  const target = opponents[index];
+
+  try {
+    const targetRef = doc(
+      db,
+      "rooms",
+      currentRoomCode,
+      "teams",
+      target.id
+    );
+
+    // Đọc lại dữ liệu mới nhất của đội mục tiêu.
+    const targetSnap = await getDoc(targetRef);
+
+    if (!targetSnap.exists()) {
+      alert("Đội được chọn không còn trong phòng!");
+      return false;
+    }
+
+    const targetData = targetSnap.data();
+    const targetScore = Math.max(0, Number(targetData.score) || 0);
+
+    await updateDoc(targetRef, {
+      score: Math.max(0, targetScore - 5),
+      sabotagePending: true,
+      updatedAt: serverTimestamp()
+    });
+
+    state.specialUsed.sabotage = true;
+
+    alert(
+      "💣 Đã phá hoại đội đối thủ! Đội đó bị trừ 5 điểm " +
+      "và phần thưởng câu đúng tiếp theo sẽ bị phá."
+    );
+
+    return true;
+  } catch (error) {
+    console.error("Lỗi sử dụng thẻ Phá hoại:", error);
+    alert("Không thể sử dụng thẻ Phá hoại. Hãy kiểm tra kết nối và quyền Firestore.");
+    return false;
+  }
+};
+</script>
+
+<script>
+"use strict";
+
+/* 10 câu hỏi tiếng Hàn */
+const questions = [
+{
+ q:"다음 중 한국어와 베트남어의 공손성 표현에 대한 설명으로 옳은 것은 무엇입니까?",
+ a:[
+  "한국어는 호칭어만으로, 베트남어는 종결어미로 공손성을 나타낸다.",
+  "한국어는 종결어미로, 베트남어는 호칭과 문맥 등으로 공손성을 나타낸다.",
+  "한국어는 어순으로, 베트남어는 동사 어미로 공손성을 나타낸다.",
+  "한국어는 억양으로, 베트남어는 어순으로 공손성을 나타낸다."
+ ], c:1
+},
+{
+ q:"다음 중 다른 세 문장과 달리 금지의 의미를 나타내는 문장은 무엇입니까?",
+ a:["오늘은 학교에 안 가요.","오늘은 학교에 못 가요.","오늘은 학교에 가지 못해요.","오늘은 학교에 가지 마세요."],c:3
+},
+{
+ q:"베트남어의 명령 표현에 대한 설명으로 옳지 않은 것은 무엇입니까?",
+ a:[
+  "‘hãy’는 행동을 하도록 요구할 때 사용할 수 있다.",
+  "‘đừng’은 행동을 하지 않도록 요구할 때 사용할 수 있다.",
+  "‘chớ’는 문맥에 따라 경고나 금지의 의미를 나타낼 수 있다.",
+  "‘hãy’는 모든 베트남어 명령문에 반드시 사용해야 한다."
+ ],c:3
+},
+{
+ q:"다음 중 문장의 형식과 의사소통 기능의 관계를 가장 잘 설명한 것은 무엇입니까?",
+ a:[
+  "의문문은 질문 기능만 수행할 수 있다.",
+  "평서문은 정보 전달 기능만 수행할 수 있다.",
+  "의문문과 평서문도 문맥에 따라 요청 기능을 수행할 수 있다.",
+  "명령 기능은 명령형 문장에서만 나타날 수 있다."
+ ],c:2
+},
+{
+ q:"다음 중 한국어 부정 표현에 대한 설명으로 옳은 것은 무엇입니까?",
+ a:[
+  "‘안’과 ‘-지 않다’는 모두 부정을 나타낼 수 있다.",
+  "‘못’과 ‘-지 못하다’는 모두 금지 명령만 나타낸다.",
+  "‘없다’는 모든 동사 앞에 붙어 부정을 나타낸다.",
+  "‘-지 마세요’는 행동을 할 수 없음을 나타낸다."
+ ],c:0
+},
+{
+ q:"다음 중 한국어와 베트남어의 부정문에 대한 설명으로 옳지 않은 것은 무엇입니까?",
+ a:[
+  "한국어는 ‘안’과 ‘-지 않다’로 부정을 나타낼 수 있다.",
+  "베트남어는 ‘không’을 사용하여 부정을 나타낼 수 있다.",
+  "한국어는 부정 표현을 동사 뒤에만 사용할 수 있다.",
+  "두 언어는 서로 다른 문법적 수단으로 부정을 나타낸다."
+ ],c:2
+},
+{
+ q:"다음 중 ‘-아/어 주세요’와 베트남어의 ‘giúp’, ‘với’, ‘nhé’에 대한 설명으로 가장 알맞은 것은 무엇입니까?",
+ a:[
+  "두 언어 모두 이 표현들로 행동 금지만 나타낸다.",
+  "두 언어 모두 이 표현들로 과거 사실을 설명한다.",
+  "한국어는 금지에만, 베트남어는 의무에만 사용한다.",
+  "두 언어 모두 이 표현들을 부탁이나 요청에 사용할 수 있다."
+ ],c:3
+},
+{
+ q:"한국어와 베트남어의 명령문을 번역할 때 가장 적절한 방법은 무엇입니까?",
+ a:[
+  "종결어미와 베트남어의 대응 표현만 확인한다.",
+  "문법 형식과 발화 의도, 관계와 문맥을 함께 고려한다.",
+  "두 언어의 어순과 문장 길이를 동일하게 유지한다.",
+  "직접적인 명령문은 항상 직접적인 명령문으로 번역한다."
+ ],c:1
+},
+{
+ q:"다음 중 한국어의 부정 표현에 대한 설명으로 가장 알맞은 것은 무엇입니까?",
+ a:[
+  "‘안’과 ‘못’은 모두 행동을 하지 않는다는 사실만 나타내므로 서로 바꾸어 사용할 수 있다.",
+  "‘안’은 행동을 하지 않음을, ‘못’은 능력이나 상황으로 인해 행동할 수 없음을 나타낼 수 있다.",
+  "‘-지 않다’는 금지를, ‘-지 말다’는 단순한 사실의 부정을 나타낸다.",
+  "‘없다’와 ‘못하다’는 모두 존재하지 않는다는 의미를 나타낸다."
+ ],c:1
+},
+{
+ q:"다음 중 한국어와 베트남어의 명령문을 대조할 때 가장 적절한 설명은 무엇입니까?",
+ a:[
+  "같은 명령 의도라면 두 언어에서 반드시 같은 문장 형식을 사용해야 한다.",
+  "베트남어는 명령 표현보다 어순을 통해 명령의 의미를 나타내는 것이 더 중요하다.",
+  "한국어는 종결어미만으로, 베트남어는 호칭어만으로 명령의 공손성을 결정한다.",
+  "두 언어 모두 문법 형식뿐 아니라 화자와 청자의 관계 및 문맥도 고려해야 한다."
+ ],c:3
+}
+];
+
+/* Tỉ lệ cộng lại bằng 100% */
+const outcomes = [
+ {id:"rescue",name:"🚑 Cấp cứu thành công",desc:"Ca cấp cứu thành công! +5 điểm.",weight:15,points:5},
+ {id:"priority",name:"🚨 Đường ưu tiên",desc:"Xe cứu thương được ưu tiên! +10 điểm.",weight:5,points:10},
+ {id:"heal",name:"❤️ Hồi phục sinh lực",desc:"Được hồi phục 1 tim, tối đa 3 tim.",weight:11,heal:1},
+ {id:"shield",name:"🛡️ Lá chắn",desc:"Nhận 1 lá chắn chặn mất tim khi trả lời sai.",weight:11,shield:1},
+ {id:"supply",name:"📦 Tiếp tế",desc:"Nhận đồ tiếp tế. Không thay đổi điểm.",weight:13},
+ {id:"extra",name:"🎁 Lật thêm thẻ",desc:"Bạn được lật thêm một thẻ!",weight:8,extra:1},
+ {id:"traffic",name:"🚦 Kẹt xe",desc:"Kẹt xe! -5 điểm.",weight:10,points:-5},
+ {id:"rain",name:"🌧️ Mưa lớn",desc:"Mưa lớn! -3 điểm.",weight:12,points:-3},
+ {id:"jackpot",name:"👑 Jackpot",desc:"Vận may cực lớn! +20 điểm.",weight:3,points:20},
+
+ {id:"steal",name:"🥷 Cướp điểm",desc:"Chọn một đội đối thủ để cướp tối đa 10 điểm!",weight:4,special:true},
+ {id:"swap",name:"🔄 Đổi điểm",desc:"Chọn một đội đối thủ để hoán đổi tổng điểm!",weight:4,special:true},
+ {id:"sabotage",name:"💣 Phá hoại",desc:"Chọn một đội đối thủ để trừ 5 điểm và phá phần thưởng câu đúng tiếp theo!",weight:4,special:true}
+];
+
+const $ = id => document.getElementById(id);
+const state = {
+ team:"",score:0,hearts:2,maxHearts:3,shields:0,
+ index:0,seconds:20,timer:null,locked:false,
+ sound:false,gameOver:false,extraUsed:0,flipsLeft:0,
+
+ // Theo dõi thẻ đặc biệt đã sử dụng
+ specialUsed:{
+  steal:false,
+  swap:false,
+  sabotage:false
+ },
+
+ // Có bị mất điểm thưởng ở câu đúng tiếp theo không?
+ sabotagePending:false
+};
+
+// Nhận thay đổi từ Firestore do đội khác gây ra, không ghi ngược điểm cũ lên database.
+window.onRemoteTeamUpdate = function(teamData){
+  if (typeof teamData.score === "number" && teamData.score !== state.score) {
+    state.score = teamData.score;
+    $("scoreDisplay").textContent = "⭐ " + state.score;
+  }
+  if (typeof teamData.hearts === "number") {
+    state.hearts = Math.max(0, Math.min(state.maxHearts, teamData.hearts));
+    $("heartsDisplay").textContent = "❤️".repeat(state.hearts) + "🖤".repeat(state.maxHearts-state.hearts);
+  }
+  if (typeof teamData.sabotagePending === "boolean") {
+    state.sabotagePending = teamData.sabotagePending;
+  }
+};
+
+function updateStats(){
+  $("teamNameDisplay").textContent="🚑 "+state.team;
+  $("stageDisplay").textContent=`CÂU ${Math.min(state.index+1,10)}/10`;
+  $("heartsDisplay").textContent="❤️".repeat(state.hearts)+"🖤".repeat(state.maxHearts-state.hearts);
+  $("shieldDisplay").textContent="🛡️ "+state.shields;
+  $("scoreDisplay").textContent="⭐ "+state.score;
+
+  // Đồng bộ điểm, tim và chặng chơi lên màn hình giáo viên
+  if (typeof window.syncTeamState === "function") {
+    window.syncTeamState({
+      score: state.score,
+      hearts: state.hearts,
+      stage: Math.min(state.index + 1, questions.length),
+      status: state.gameOver ? "finished" : "playing"
+    });
+  }
+}
+function clearTimer(){
+ if(state.timer){clearInterval(state.timer);state.timer=null;}
+}
+function resetScene(){
+ $("effectOverlay").className="effect-overlay";
+ $("ambulance").className="ambulance";
+ $("mainScene").style.filter="none";
+}
+function startGame(){
+ const name=$("teamInput").value.trim();
+ if(!name){
+  $("startError").textContent="Bạn hãy nhập tên đội trước nhé!";
+  return;
+ }
+
+ state.team=name;
+ state.score=0;
+ state.hearts=2;
+ state.maxHearts=3;
+ state.shields=0;
+
+ state.index=0;
+ state.gameOver=false;
+ state.locked=false;
+ state.extraUsed=0;
+ state.flipsLeft=0;
+
+ // Đặt lại trạng thái thẻ đặc biệt khi bắt đầu ván mới
+ state.specialUsed={
+  steal:false,
+  swap:false,
+  sabotage:false
+ };
+ state.sabotagePending=false;
+
+ $("startScreen").classList.add("hidden");
+ $("endScreen").classList.add("hidden");
+ $("gameScreen").classList.remove("hidden");
+
+ updateStats();
+ loadQuestion();
+
+ if(state.sound)playMusic();
+}
+
+window.startGame = startGame;
+function loadQuestion(){
+ clearTimer();
+ $("feedback").classList.add("hidden");
+ $("luckyPanel").classList.add("hidden");
+ $("questionCard").classList.remove("hidden");
+ resetScene();
+ state.locked=false;state.seconds=20;state.extraUsed=0;state.flipsLeft=0;
+ const q=questions[state.index];
+ $("questionNumber").textContent=`CÂU ${state.index+1}/10`;
+ $("questionText").textContent=q.q;
+ const answers=$("mainAnswers");answers.innerHTML="";
+ q.a.forEach((answer,i)=>{
+  const b=document.createElement("button");
+  b.className="answer-btn";b.type="button";
+  b.textContent="ABCD"[i]+". "+answer;
+  b.onclick=()=>answerQuestion(i,b);
+  answers.appendChild(b);
+ });
+ updateStats();updateTimer();startTimer();
+}
+function updateTimer(){
+ $("timerValue").textContent=state.seconds;
+ $("timerBar").style.width=(state.seconds/20*100)+"%";
+ $("timerBar").style.background=state.seconds<=5?"#ff5964":state.seconds<=9?"#ffd166":"#26c281";
+}
+function startTimer(){
+ state.timer=setInterval(()=>{
+  if(state.locked||state.gameOver)return;
+  state.seconds--;updateTimer();
+  if(state.seconds<=0){
+   clearTimer();state.locked=true;disableAnswers();
+   loseHeart("⏰","HẾT GIỜ! -1 TIM","Bạn đã hết 20 giây. Không được lật thẻ ở câu này.");
+  }
+ },1000);
+}
+function disableAnswers(){
+ [...$("mainAnswers").children].forEach(b=>b.disabled=true);
+}
+async function answerQuestion(i,button){
+ if(state.locked||state.gameOver)return;
+ state.locked=true;clearTimer();disableAnswers();
+ const q=questions[state.index];
+ if(i===q.c){
+  button.classList.add("correct");
+    // Kiểm tra đội có bị Phá hoại không
+  let sabotageActive = false;
+
+  if (window.checkSabotageStatus) {
+    sabotageActive = await window.checkSabotageStatus();
+  }
+
+  if (sabotageActive) {
+    showFeedback(
+      "💣",
+      "PHẦN THƯỞNG BỊ PHÁ HOẠI!",
+      "Đội bạn trả lời đúng nhưng phần thưởng của câu này đã bị phá hoại!",
+      "Tiếp tục →",
+      nextQuestion
+    );
+  } else {
+    state.score += 10;
+    updateStats();
+    $("questionCard").classList.add("hidden");
+    state.flipsLeft = 1;
+    state.extraUsed = 0;
+    showLuckyCards();
+  }
+ }else{
+  button.classList.add("wrong");
+  $("mainAnswers").children[q.c].classList.add("correct");
+  if(state.shields>0){
+   state.shields--;updateStats();
+   showFeedback("🛡️","LÁ CHẮN KÍCH HOẠT!","Bạn trả lời sai nhưng lá chắn đã chặn việc mất tim. Không được lật thẻ.", "Tiếp tục →",nextQuestion);
+  }else{
+   loseHeart("❌","TRẢ LỜI SAI! -1 TIM","Bạn không được lật thẻ ở câu này.");
+  }
+ }
+}
+function loseHeart(icon,title,message){
+ state.hearts=Math.max(0,state.hearts-1);updateStats();
+ showFeedback(icon,title,message,state.hearts===0?"Xem kết quả":"Tiếp tục →",state.hearts===0?endGame:nextQuestion);
+}
+function showFeedback(icon,title,message,label,action){
+ $("feedbackIcon").textContent=icon;
+ $("feedbackTitle").textContent=title;
+ $("feedbackText").textContent=message;
+ $("feedback").classList.remove("hidden");
+ $("luckyPanel").classList.add("hidden");
+ $("questionCard").classList.add("hidden");
+ $("nextBtn").textContent=label;
+ $("nextBtn").onclick=action;
+}
+function weightedOutcome(){
+ let n=Math.random()*100;
+ for(const o of outcomes){n-=o.weight;if(n<0)return o;}
+ return outcomes[outcomes.length-1];
+}
+function showLuckyCards(){
+ $("feedback").classList.add("hidden");
+ $("questionCard").classList.add("hidden");
+ $("luckyPanel").classList.remove("hidden");
+ $("luckyGrid").innerHTML="";
+ $("extraFlipNote").textContent="Chọn một trong sáu thẻ úp xuống.";
+  // Tạo bộ 6 lá bài, chọn kết quả theo tỉ lệ rồi xáo trộn
+ const deck = [];
+ const pool = [...outcomes];
+
+ for (let i = 0; i < 6 && pool.length > 0; i++) {
+  let totalWeight = pool.reduce((sum, o) => sum + o.weight, 0);
+  let random = Math.random() * totalWeight;
+  let selectedIndex = 0;
+
+  for (let j = 0; j < pool.length; j++) {
+   random -= pool[j].weight;
+   if (random < 0) {
+    selectedIndex = j;
+    break;
+   }
+  }
+
+  deck.push(pool.splice(selectedIndex, 1)[0]);
+ }
+
+ // Xáo trộn thứ tự 6 lá bài
+ for (let i = deck.length - 1; i > 0; i--) {
+  const j = Math.floor(Math.random() * (i + 1));
+  [deck[i], deck[j]] = [deck[j], deck[i]];
+ }
+
+ deck.forEach(outcome => {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.className = "lucky-card";
+  b.innerHTML = '<span class="mark">❔</span><span>THẺ MAY MẮN</span>';
+  b.onclick = () => flipCard(b, outcome);
+  $("luckyGrid").appendChild(b);
+ });
+}
+async function flipCard(button, o) {
+  if (button.disabled || state.gameOver) return;
+
+  button.disabled = true;
+  button.classList.add("revealed");
+  button.innerHTML =
+    `<span class="mark">${o.name.split(" ")[0]}</span><span>${o.name}</span>`;
+
+  let message = o.desc;
+
+// Thẻ Cướp điểm
+if (o.id === "steal") {
+  if (state.specialUsed.steal) {
+    message = "Đội bạn đã sử dụng thẻ Cướp điểm trong ván này!";
+  } else {
+    const success = await window.useStealCard();
+
+    if (success) {
+      message = "🥷 Cướp điểm thành công! Điểm đã được cập nhật.";
+    } else {
+      message = "Không thể thực hiện Cướp điểm lần này.";
+    }
+  }
+
+  // Điểm đã được cập nhật trong useStealCard().
+}
+// Thẻ Đổi điểm
+else if (o.id === "swap") {
+  if (state.specialUsed.swap) {
+    message = "Đội bạn đã sử dụng thẻ Đổi điểm trong ván này!";
+  } else {
+    const success = await window.useSwapCard();
+
+    if (success) {
+      message = "🔄 Đổi điểm thành công! Điểm của hai đội đã được hoán đổi.";
+    } else {
+      message = "Không thể thực hiện Đổi điểm lần này.";
+    }
+  }
+
+  // Điểm đã được cập nhật trong useSwapCard().
+}
+// Thẻ Phá hoại
+else if (o.id === "sabotage") {
+  if (state.specialUsed.sabotage) {
+    message = "Đội bạn đã sử dụng thẻ Phá hoại trong ván này!";
+  } else {
+    const success = await window.useSabotageCard();
+
+    if (success) {
+      message = "💣 Phá hoại thành công! Đội đối thủ bị trừ 5 điểm.";
+    } else {
+      message = "Không thể thực hiện Phá hoại lần này.";
+    }
+  }
+
+  // Điểm đã được cập nhật trong useSabotageCard().
+}
+else if (o.points) {
+  state.score = Math.max(0, state.score + o.points);
+  message += ` Điểm hiện tại: ${state.score}.`;
+}
+
+if (o.heal) {
+  if (state.hearts < state.maxHearts) {
+    state.hearts++;
+  } else {
+    message = "Tim đã đầy nên không thể hồi phục thêm.";
+  }
+}
+
+if (o.shield) state.shields++;
+
+if (o.id === "traffic") {
+  $("effectOverlay").classList.add("effect-traffic");
+}
+
+if (o.id === "rain") {
+  $("effectOverlay").classList.add("effect-rain");
+}
+
+if (["rescue", "priority", "jackpot"].includes(o.id)) {
+  $("ambulance").classList.add("move-forward");
+}
+
+if (o.extra) {
+  if (state.extraUsed < 2) {
+    state.extraUsed++;
+    state.flipsLeft++;
+    message += " Bạn được lật thêm một thẻ.";
+  } else {
+    message = "Bạn đã đạt giới hạn lật thêm thẻ trong câu này.";
+  }
+}
+
+  state.flipsLeft--;
+  updateStats();
+
+  if (state.flipsLeft > 0) {
+    $("extraFlipNote").textContent = message + " Hãy chọn thêm một thẻ.";
+    $("feedbackIcon").textContent = o.name.split(" ")[0];
+    $("feedbackTitle").textContent = o.name;
+    $("feedbackText").textContent = message;
+    $("feedback").classList.remove("hidden");
+    $("nextBtn").textContent = "ĐÃ HIỂU";
+    $("nextBtn").onclick = () => $("feedback").classList.add("hidden");
+
+    [...$("luckyGrid").children].forEach(b => {
+      if (b !== button && !b.classList.contains("revealed")) {
+        b.disabled = false;
+      }
+    });
+  } else {
+    showFeedback(
+      o.name.split(" ")[0],
+      o.name,
+      message,
+      "CÂU TIẾP THEO →",
+      nextQuestion
+    );
+  }
+}
+function nextQuestion(){
+ clearTimer();
+ if(state.hearts<=0||state.index>=questions.length-1){endGame();return;}
+ state.index++;loadQuestion();
+}
+function endGame(){
+ if(state.gameOver)return;
+ state.gameOver=true;clearTimer();
+ $("gameScreen").classList.add("hidden");
+ $("startScreen").classList.add("hidden");
+ $("endScreen").classList.remove("hidden");
+ $("endTeam").textContent="Đội: "+state.team;
+ $("finalScore").textContent=state.score;
+ let rank="C";
+ if(state.score>=150)rank="S";
+ else if(state.score>=120)rank="A";
+ else if(state.score>=90)rank="B";
+ $("finalRank").textContent="HẠNG "+rank;
+ $("endTitle").textContent=state.hearts===0?"🚑 Đội đã hết tim!":"🏥 Hoàn thành nhiệm vụ!";
+ $("endInfo").innerHTML=
+  `<p>❤️ Tim còn lại: <strong>${state.hearts}/${state.maxHearts}</strong></p>
+   <p>🛡️ Lá chắn còn lại: <strong>${state.shields}</strong></p>
+   <p>${state.hearts===0?"Nhiệm vụ kết thúc vì đội đã hết tim.":"Bệnh nhân đã được đưa đến bệnh viện!"}</p>
+   <p class="small-note">S: từ 150 điểm · A: 120–149 · B: 90–119 · C: dưới 90 điểm.</p>`;
+}
+function playMusic(){
+ $("bgMusic").volume=.35;
+ $("bgMusic").play().catch(()=>{});
+}
+function updateSoundButtons(){
+ $("soundBtn").textContent=state.sound?"🔊":"🔇";
+ $("soundStartBtn").textContent=state.sound?"🔊 Tắt nhạc":"🔇 Bật nhạc";
+}
+function toggleSound(){
+ state.sound=!state.sound;
+ updateSoundButtons();
+ if(state.sound)playMusic();else $("bgMusic").pause();
+}
+
+$("startBtn").onclick=()=>window.joinRoom();
+$("teamInput").addEventListener("keydown",e=>{
+  if(e.key==="Enter") window.joinRoom();
+});
+$("soundStartBtn").onclick=toggleSound;
+$("soundBtn").onclick=toggleSound;
+$("restartBtn").onclick=()=>{
+ clearTimer();state.gameOver=false;
+ $("endScreen").classList.add("hidden");
+ $("gameScreen").classList.add("hidden");
+ $("startScreen").classList.remove("hidden");
+ $("teamInput").value=state.team;
+ $("startError").textContent="";
+ updateSoundButtons();
+};
+updateSoundButtons();
+</script>
+</body>
+</html>
